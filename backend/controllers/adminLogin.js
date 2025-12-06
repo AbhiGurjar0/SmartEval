@@ -46,7 +46,7 @@ export const teacherLogin = async (req, res) => {
   return res.json({
     success: true,
     messages: req.flash("success"),
-    teacher: {
+    user: {
       id: teacher._id,
       name: teacher.name,
       enrollmentNumber: teacher.enrollmentNumber,

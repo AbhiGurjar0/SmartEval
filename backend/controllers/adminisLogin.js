@@ -5,8 +5,6 @@ import cookie from "cookie-parser";
 import dotenv from "dotenv";
 dotenv.config();
 
-
-
 export const adminisLogin = async (req, res) => {
   let { enrollmentNumber, password, role } = req.body;
   if (role && role !== "student") {

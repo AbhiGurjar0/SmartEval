@@ -1,253 +1,226 @@
 import React from "react";
-import { Download, BarChart, Zap } from "lucide-react";
+import {
+  Download,
+  BarChart,
+  Zap,
+  Sparkles,
+  Fingerprint,
+  BookOpen,
+} from "lucide-react";
 import FeatureSection from "./FeatureBlocks/FeatureSection";
 import { IoIosArrowRoundForward } from "react-icons/io";
 import ProfessionalBusiness from "./FeatureBlocks/ProfessionalBusiness";
 import HeroSection3 from "../Steps";
 
-const waveBackgroundStyle = {
-  backgroundColor: "#1c1c1c",
-  overflow: "hidden",
-  position: "relative",
-  backgroundImage: `
-    radial-gradient(circle at 100% 100%, #1e1e1e 20%, transparent 40%),
-    linear-gradient(270deg, rgba(77, 151, 255, 0.5) 0%, rgba(138, 21, 163, 0.5) 100%),
-    linear-gradient(180deg, rgba(77, 151, 255, 0.2) 0%, rgba(138, 21, 163, 0.2) 100%)
-  `,
-  backgroundBlendMode: "overlay, normal, normal",
-  "--wave-color-start": "#8A15A3",
-  "--wave-color-end": "#4D97FF",
-};
-
 export default function Features() {
+  const features = [
+    {
+      id: "A",
+      title: "AI-Powered Answer Evaluation",
+      description:
+        "Instantly analyze handwritten or typed student submissions with AI-driven accuracy. SmartEval evaluates content, correctness, structure, and writing clarity — delivering results in seconds.",
+      icon: <Sparkles className="w-6 h-6" />,
+      gradient: "from-purple-600 to-pink-600",
+      width: "lg:col-span-2",
+    },
+    {
+      id: "B",
+      title: "Performance Dashboards",
+      description:
+        "Visualize student progress with automatic charts and insights. Track learning gaps, compare class performance, and generate reports instantly.",
+      icon: <BarChart className="w-6 h-6" />,
+      gradient: "from-blue-600 to-cyan-600",
+      width: "lg:col-span-1",
+    },
+    {
+      id: "C",
+      title: "Plagiarism & AI Content Check",
+      description:
+        "Detect copied, AI-generated, or rephrased answers with high accuracy. SmartEval ensures academic honesty by comparing submissions across databases and AI patterns.",
+      icon: <Zap className="w-6 h-6" />,
+      gradient: "from-orange-600 to-red-600",
+      width: "lg:col-span-1",
+    },
+    {
+      id: "D",
+      title: "Handwriting Verification",
+      description:
+        "Verify whether the uploaded answers are written by the same student. Our handwriting recognition model analyzes patterns and prevents impersonation or outsourced writing.",
+      icon: <Fingerprint className="w-6 h-6" />,
+      gradient: "from-green-600 to-emerald-600",
+      width: "lg:col-span-2",
+    },
+    {
+      id: "E",
+      title: "Smart Grading Automation",
+      description:
+        "Generate accurate marks, feedback, and evaluation summaries automatically. Reduce teacher workload and speed up the checking process by 10x.",
+      icon: <BookOpen className="w-6 h-6" />,
+      gradient: "from-violet-600 to-indigo-600",
+      width: "lg:col-span-2 lg:col-start-2",
+    },
+  ];
+
   return (
-    <div className="min-h-screen py-20 px-4 sm:px-8 font-sans">
+    <div className="min-h-screen bg-gradient-to-b from-gray-900 via-purple-900/20 to-gray-900 py-20 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
+      {/* Animated Background Elements */}
+      <div className="absolute inset-0 overflow-hidden">
+        <div className="absolute -top-40 -right-40 w-80 h-80 bg-purple-600/10 rounded-full blur-3xl"></div>
+        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-blue-600/10 rounded-full blur-3xl"></div>
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full">
+          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent animate-pulse"></div>
+        </div>
+      </div>
+
       {/* HEADER */}
-      <header className="max-w-7xl mx-auto mb-16 text-white">
-        <h1 className="text-4xl sm:text-5xl font-thin leading-tight">
-          Powerful AI Tools for Modern Academic Evaluation <br className="hidden sm:block" />
-          All in One Smart Workspace
-        </h1>
-      </header>
+      <div className="max-w-7xl mx-auto mb-20 relative z-10">
+        <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-8">
+          <div className="flex-1">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-purple-600/20 to-blue-600/20 border border-white/10 backdrop-blur-sm mb-6">
+              <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+              <span className="text-sm font-medium text-white/80">
+                AI-Powered Tools
+              </span>
+            </div>
 
-      {/* GRID */}
-      <main className="max-w-7xl mx-auto">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-18">
-          {/* CARD A — SPECIAL CARD */}
-          <div
-            className="relative flex flex-col justify-between p-6 md:p-8 rounded-2xl shadow-xl 
-               border border-gray-700/50 h-[480px] w-[560px] 
-               transition-all duration-300 hover:shadow-2xl hover:border-indigo-500/50"
-            style={waveBackgroundStyle}
-          >
-            {/* Background Layer */}
+            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white mb-6">
+              <span className="bg-gradient-to-r from-white via-purple-200 to-blue-200 bg-clip-text text-transparent">
+                Powerful AI Tools
+              </span>
+              <br />
+              <span className="text-white">for Modern Academic Evaluation</span>
+            </h1>
+
+            <p className="text-xl text-white/70 max-w-3xl">
+              All in one intelligent workspace designed to transform how
+              educators evaluate and analyze student work.
+            </p>
+          </div>
+
+          <div className="lg:w-auto">
+            <button className="group flex items-center gap-3 px-8 py-4 rounded-full bg-gradient-to-r from-purple-600 to-blue-600 text-white font-medium hover:shadow-2xl hover:shadow-purple-500/30 transition-all duration-300 hover:scale-105">
+              <span>Explore All Features</span>
+              <IoIosArrowRoundForward className="w-6 h-6 transition-transform group-hover:translate-x-1" />
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* FEATURE CARDS GRID */}
+      <div className="max-w-7xl mx-auto relative z-10">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-20">
+          {features.map((feature, index) => (
             <div
-              className="absolute inset-0 z-0 opacity-70"
-              style={{
-                backgroundImage:
-                  "url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIiB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCI+PHBhdGggZD0iTTAgNTAgQzI1IDAgNzUgMTAwIDEwMCA1MCIvPjwvc3ZnPg==)",
-                backgroundSize: "150% 150%",
-                backgroundRepeat: "repeat",
-                boxShadow:
-                  "inset 0 0 100px rgba(77, 151, 255, 0.2), inset 0 0 50px rgba(138, 21, 163, 0.2)",
-                transform: "scale(1.5) rotate(15deg) translateY(10%)",
-                filter: "blur(30px) opacity(0.8)",
-              }}
-            />
-
-            {/* Content */}
-            <div className="relative z-10 text-white flex flex-col h-full">
-              <div className="text-5xl font-extrabold mb-8">A</div>
-
-              <div className="flex flex-col grow">
-                <div className="text-lg font-bold uppercase text-gray-200 mb-2 tracking-wider">
-                  AI-Powered Answer Evaluation
+              key={feature.id}
+              className={`${feature.width} relative group`}
+              style={{ animationDelay: `${index * 100}ms` }}
+            >
+              <div className="relative h-full p-8 rounded-3xl border border-white/10 bg-gradient-to-br from-gray-900/50 to-gray-900/30 backdrop-blur-sm overflow-hidden transition-all duration-500 hover:scale-[1.02] hover:border-purple-500/30 hover:shadow-2xl hover:shadow-purple-500/10">
+                {/* Animated Background */}
+                <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+                  <div
+                    className={`absolute inset-0 bg-gradient-to-br ${feature.gradient} opacity-5`}
+                  ></div>
+                  <div className="absolute -inset-1 bg-gradient-to-r from-transparent via-white/5 to-transparent animate-shimmer"></div>
                 </div>
-                <p className="text-sm text-gray-400 leading-relaxed">
-                  Instantly analyze handwritten or typed student submissions with AI-driven 
-                  accuracy. SmartEval evaluates content, correctness, structure, and writing 
-                  clarity — delivering results in seconds.
-                </p>
-              </div>
 
-              <div className="mt-8">
-                <button
-                  className="w-12 h-12 flex items-center justify-center rounded-full 
-                     transition-all duration-300 transform hover:scale-105"
-                  style={{
-                    background: "linear-gradient(135deg, #4D97FF, #8A15A3)",
-                    boxShadow: "0 4px 15px rgba(77, 151, 255, 0.4)",
-                  }}
-                >
-                  <Download size={20} className="text-white" />
-                </button>
+                {/* Corner Accents */}
+                <div
+                  className={`absolute top-0 left-0 w-16 h-16 bg-gradient-to-br ${feature.gradient} opacity-20 blur-xl`}
+                ></div>
+                <div className="absolute top-4 left-4 w-2 h-2 bg-gradient-to-r from-white to-transparent rounded-full"></div>
+                <div className="absolute bottom-4 right-4 w-2 h-2 bg-gradient-to-r from-transparent to-white rounded-full"></div>
+
+                {/* Content */}
+                <div className="relative z-10 h-full flex flex-col">
+                  {/* Header */}
+                  <div className="flex items-start justify-between mb-8">
+                    <div className="flex items-center gap-4">
+                      <div className="relative">
+                        <div
+                          className={`absolute inset-0 bg-gradient-to-r ${feature.gradient} rounded-xl blur-lg opacity-50`}
+                        ></div>
+                        <div
+                          className={`relative w-12 h-12 flex items-center justify-center rounded-xl bg-gradient-to-r ${feature.gradient} text-white font-bold text-lg`}
+                        >
+                          {feature.id}
+                        </div>
+                      </div>
+                      <div
+                        className={`p-3 rounded-xl bg-gradient-to-r ${feature.gradient} bg-opacity-10 border border-white/10`}
+                      >
+                        {feature.icon}
+                      </div>
+                    </div>
+
+                    <div className="text-xs font-medium px-3 py-1 rounded-full bg-white/5 text-white/60 border border-white/10">
+                      AI-Powered
+                    </div>
+                  </div>
+
+                  {/* Title & Description */}
+                  <div className="mb-8 flex-grow">
+                    <h3 className="text-xl font-bold text-white mb-4">
+                      {feature.title}
+                    </h3>
+                    <p className="text-white/60 leading-relaxed">
+                      {feature.description}
+                    </p>
+                  </div>
+
+                  {/* Interactive Button */}
+                  <div className="mt-auto">
+                    <button className="group/btn relative overflow-hidden w-14 h-14 rounded-full transition-all duration-300 hover:w-44">
+                      <div
+                        className={`absolute inset-0 bg-gradient-to-r ${feature.gradient} transition-all duration-300`}
+                      ></div>
+                      <div className="absolute inset-0 flex items-center justify-center gap-3 px-4">
+                        <span className="text-white font-medium translate-x-12 group-hover/btn:translate-x-0 transition-transform duration-300 whitespace-nowrap">
+                          Learn More
+                        </span>
+                        <div className="relative">
+                          <div className="absolute -ins-2 bg-white/20 rounded-full blur-md opacity-0 group-hover/btn:opacity-100 transition-opacity duration-300"></div>
+                          <div className="relative w-8 h-8 flex items-center justify-center rounded-full bg-white text-gray-900">
+                            <IoIosArrowRoundForward className="w-5 h-5" />
+                          </div>
+                        </div>
+                      </div>
+                    </button>
+                  </div>
+
+                  {/* Stats Badge */}
+                  <div className="absolute top-8 right-8 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+                    <div className="text-xs font-medium px-3 py-1 rounded-full bg-gradient-to-r from-green-500/20 to-emerald-500/20 text-green-300 border border-green-500/20">
+                      +99% Accuracy
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
-          </div>
+          ))}
+        </div>
 
-          {/* CARD B */}
-          <div
-            className="relative flex flex-col justify-between p-6 md:p-8 rounded-2xl shadow-xl 
-                       border border-gray-700/50 h-[480px] w-[400px] bg-[#1c1c1c]
-                       transition-all duration-300 hover:shadow-2xl hover:border-indigo-500/50 ml-30"
-          >
-            <div className="relative z-10 text-white flex flex-col h-full">
-              <div className="text-5xl font-extrabold mb-8">B</div>
-
-              <div className="flex flex-col grow">
-                <div className="text-lg font-bold uppercase text-gray-200 mb-2 tracking-wider">
-                 PERFORMANCE DASHBOARDS
-                </div>
-                <p className="text-sm text-gray-400 leading-relaxed">
-                 Visualize student progress with automatic charts and insights. Track learning 
-  gaps, compare class performance, and generate reports instantly.
-                </p>
-              </div>
-
-              <div className="mt-8">
-                <button
-                  className="w-12 h-12 flex items-center justify-center rounded-full 
-                             transition-all duration-300 transform hover:scale-105"
-                  style={{
-                    background: "linear-gradient(135deg, #4D97FF, #8A15A3)",
-                    boxShadow: "0 4px 15px rgba(77, 151, 255, 0.4)",
-                  }}
-                >
-                  <BarChart size={20} className="text-white" />
+        {/* CTA Section */}
+        <div className="relative rounded-3xl overflow-hidden mb-20">
+          <div className="absolute inset-0 bg-gradient-to-r from-purple-600/20 via-blue-600/20 to-cyan-600/20"></div>
+          <div className="relative z-10 p-12 text-center">
+            <div className="max-w-3xl mx-auto">
+              <h2 className="text-4xl font-bold text-white mb-6">
+                Ready to Transform Your Evaluation Process?
+              </h2>
+              <p className="text-xl text-white/70 mb-10">
+                Join thousands of educators who trust SmartEval for accurate,
+                efficient, and intelligent assessment.
+              </p>
+              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                <button className="group px-8 py-4 rounded-full bg-gradient-to-r from-purple-600 to-blue-600 text-white font-medium hover:shadow-2xl hover:shadow-purple-500/30 transition-all duration-300 hover:scale-105">
+                  <span className="flex items-center gap-3">
+                    Start Free Trial
+                    <IoIosArrowRoundForward className="w-6 h-6 transition-transform group-hover:translate-x-1" />
+                  </span>
                 </button>
-              </div>
-            </div>
-          </div>
-
-          {/* CARD C */}
-          <div
-            className="relative flex flex-col justify-between p-6 md:p-8 rounded-2xl shadow-xl 
-                       border border-gray-700/50 h-[480px] w-full bg-[#1c1c1c]
-                       transition-all duration-300 hover:shadow-2xl hover:border-indigo-500/50 ml-20"
-          >
-            <div className="relative z-10 text-white flex flex-col h-full">
-              <div className="text-5xl font-extrabold mb-8">C</div>
-
-              <div className="flex flex-col grow">
-                <div className="text-lg font-bold uppercase text-gray-200 mb-2 tracking-wider">
-                    PLAGIARISM & AI CONTENT CHECK
-
-                </div>
-                <p className="text-sm text-gray-400 leading-relaxed">
-                 Detect copied, AI-generated, or rephrased answers with high accuracy. 
-  SmartEval ensures academic honesty by comparing submissions across 
-  databases and AI patterns.
-                </p>
-              </div>
-
-              <div className="mt-8">
-                <button
-                  className="w-12 h-12 flex items-center justify-center rounded-full 
-                             transition-all duration-300 transform hover:scale-105"
-                  style={{
-                    background: "linear-gradient(135deg, #4D97FF, #8A15A3)",
-                    boxShadow: "0 4px 15px rgba(77, 151, 255, 0.4)",
-                  }}
-                >
-                  <Zap size={20} className="text-white" />
-                </button>
-              </div>
-            </div>
-          </div>
-
-          <div
-            className="relative flex flex-col justify-between p-6 md:p-8 rounded-2xl shadow-xl 
-                       border border-gray-700/50 h-[480px] w-[700px] 
-                       transition-all duration-300 hover:shadow-2xl hover:border-indigo-500/50 "
-            style={waveBackgroundStyle}
-          >
-            <div
-              className="absolute inset-0 z-0 opacity-70"
-              style={{
-                backgroundImage:
-                  "url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIiB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCI+PHBhdGggZD0iTTAgNTAgQzI1IDAgNzUgMTAwIDEwMCA1MCIvPjwvc3ZnPg==)",
-                backgroundSize: "150% 150%",
-                backgroundRepeat: "repeat",
-                boxShadow:
-                  "inset 0 0 100px rgba(77, 151, 255, 0.2), inset 0 0 50px rgba(138, 21, 163, 0.2)",
-                transform: "scale(1.5) rotate(15deg) translateY(10%)",
-                filter: "blur(30px) opacity(0.8)",
-              }}
-            />
-
-            <div className="relative z-10 text-white flex flex-col h-full">
-              <div className="text-5xl font-extrabold mb-8">D</div>
-
-              <div className="flex flex-col grow">
-                <div className="text-lg font-bold uppercase text-gray-200 mb-2 tracking-wider">
-  HANDWRITING VERIFICATION
-                </div>
-                <p className="text-sm text-gray-400 leading-relaxed">
-                 Verify whether the uploaded answers are written by the same student. 
-  Our handwriting recognition model analyzes patterns and prevents 
-  impersonation or outsourced writing.
-                </p>
-              </div>
-
-              <div className="mt-8">
-                <button
-                  className="w-12 h-12 flex items-center justify-center rounded-full 
-                             transition-all duration-300 transform hover:scale-105"
-                  style={{
-                    background: "linear-gradient(135deg, #4D97FF, #8A15A3)",
-                    boxShadow: "0 4px 15px rgba(77, 151, 255, 0.4)",
-                  }}
-                >
-                  <Download size={20} className="text-white" />
-                </button>
-              </div>
-            </div>
-          </div>
-
-          <div
-            className="relative flex flex-col justify-between p-6 md:p-8 rounded-2xl shadow-xl 
-                       border border-gray-700/50 h-[480px] w-[650px] 
-                       transition-all duration-300 hover:shadow-2xl hover:border-indigo-500/50 ml-65"
-            style={waveBackgroundStyle}
-          >
-            <div
-              className="absolute inset-0 z-0 opacity-70"
-              style={{
-                backgroundImage:
-                  "url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIiB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCI+PHBhdGggZD0iTTAgNTAgQzI1IDAgNzUgMTAwIDEwMCA1MCIvPjwvc3ZnPg==)",
-                backgroundSize: "150% 150%",
-                backgroundRepeat: "repeat",
-                boxShadow:
-                  "inset 0 0 100px rgba(77, 151, 255, 0.2), inset 0 0 50px rgba(138, 21, 163, 0.2)",
-                transform: "scale(1.5) rotate(15deg) translateY(10%)",
-                filter: "blur(30px) opacity(0.8)",
-              }}
-            />
-
-            <div className="relative z-10 text-white flex flex-col h-full">
-              <div className="text-5xl font-extrabold mb-8">E</div>
-
-              <div className="flex flex-col grow">
-                <div className="text-lg font-bold uppercase text-gray-200 mb-2 tracking-wider">
-                  SMART GRADING AUTOMATION
-                </div>
-                <p className="text-sm text-gray-400 leading-relaxed">
-                  Generate accurate marks, feedback, and evaluation summaries 
-  automatically. Reduce teacher workload and speed up the checking process 
-  by 10x.
-                </p>
-              </div>
-
-              <div className="mt-8">
-                <button
-                  className="w-12 h-12 flex items-center justify-center rounded-full 
-                             transition-all duration-300 transform hover:scale-105"
-                  style={{
-                    background: "linear-gradient(135deg, #4D97FF, #8A15A3)",
-                    boxShadow: "0 4px 15px rgba(77, 151, 255, 0.4)",
-                  }}
-                >
-                  <Download size={20} className="text-white" />
+                <button className="px-8 py-4 rounded-full bg-white/10 backdrop-blur-sm text-white font-medium border border-white/20 hover:bg-white/20 transition-all duration-300">
+                  Schedule Demo
                 </button>
               </div>
             </div>
@@ -255,43 +228,50 @@ export default function Features() {
         </div>
 
         <FeatureSection />
-        {/* Read More */}
-        <div className="w-full flex justify-end mb-10 mr-5">
-          <button
-            className="
-      group flex items-center justify-center 
-      px-5 py-2 w-48 rounded-full text-white 
-      text-lg sm:text-xl font-thin 
-      border border-white/40 bg-transparent cursor-pointer
-      transition-all duration-300 
-      shadow-none hover:shadow-lg hover:scale-[1.02]
-    "
-            style={{
-              transition: "all 0.3s ease",
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.background =
-                "linear-gradient(90deg, #8A15A3, #4D97FF)";
-              e.currentTarget.style.border = "1px solid transparent";
-              
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.background = "transparent";
-              e.currentTarget.style.border = "1px solid rgba(255,255,255,0.4)";
-              e.currentTarget.style.boxShadow = "none";
-            }}
-          >
-            Read More
-            <IoIosArrowRoundForward
-              size={35}
-              className="ml-2 transition-all duration-300 group-hover:rotate-45"
-            />
+
+        {/* Read More Button */}
+        <div className="flex justify-center mb-20">
+          <button className="group relative overflow-hidden px-8 py-4 rounded-full border border-white/20 bg-white/5 backdrop-blur-sm hover:bg-white/10 transition-all duration-300">
+            <span className="flex items-center gap-3 text-white font-medium">
+              Read More Features
+              <IoIosArrowRoundForward className="w-6 h-6 transition-transform group-hover:translate-x-1" />
+            </span>
+            <div className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/20 to-transparent group-hover:animate-shimmer"></div>
           </button>
         </div>
-        {/* Read More */}
 
         <ProfessionalBusiness />
-      </main>
+      </div>
+
+      {/* Custom Animations */}
+      <style jsx>{`
+        @keyframes shimmer {
+          0% {
+            transform: translateX(-100%);
+          }
+          100% {
+            transform: translateX(100%);
+          }
+        }
+        .animate-shimmer {
+          animation: shimmer 2s infinite;
+        }
+
+        .animate-in {
+          animation: fadeInUp 0.6s ease-out forwards;
+        }
+
+        @keyframes fadeInUp {
+          from {
+            opacity: 0;
+            transform: translateY(30px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+      `}</style>
     </div>
   );
 }

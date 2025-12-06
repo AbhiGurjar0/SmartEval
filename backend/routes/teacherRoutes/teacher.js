@@ -60,7 +60,7 @@ router.post("/addAssignment", isLoggedIn, async (req, res) => {
 
 router.get("/allDetails", isLoggedIn, async (req, res) => {
   try {
-    if (req.user.role.toLowerCase() != "teacher") {
+    if (req?.user?.role?.toLowerCase() != "teacher") {
       return res.json("Only Teacher Can Access This");
     }
     let teacher = await Teachers.findById(req.user.id).populate(

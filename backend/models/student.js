@@ -9,7 +9,7 @@ const studentSchema = new mongoose.Schema({
   enrollmentNumber: {
     type: String,
     required: true,
-    unique: true,    
+    unique: true,
   },
 
   password: {
@@ -21,7 +21,7 @@ const studentSchema = new mongoose.Schema({
     type: String,
     default: "Student",
   },
-  
 });
 
-export default mongoose.models.Student || mongoose.model("Student", studentSchema);
+export default mongoose.models.Student ||
+  mongoose.model("Student", studentSchema);

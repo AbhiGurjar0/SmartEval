@@ -1,41 +1,20 @@
 import React, { useRef, useEffect, useState, useCallback } from "react";
 import { gsap } from "gsap";
-import { Download } from "lucide-react"; // Assuming you use lucide-react
-
-// --- CONSTANTS & HELPER FUNCTIONS (From MagicBento Source) ---
-const DEFAULT_PARTICLE_COUNT = 12;
-const DEFAULT_GLOW_COLOR = "132, 0, 255"; // Purple glow used in the styling
-
-const createParticleElement = (x, y, color = DEFAULT_GLOW_COLOR) => {
-  const el = document.createElement("div");
-  el.className = "particle";
-  el.style.cssText = `
-    position: absolute;
-    width: 4px;
-    height: 4px;
-    border-radius: 50%;
-    background: rgba(${color}, 1);
-    box-shadow: 0 0 6px rgba(${color}, 0.6);
-    pointer-events: none;
-    z-index: 100;
-    left: ${x}px;
-    top: ${y}px;
-  `;
-  return el;
-};
+import { Download, Sparkles, Users, Clock, Shield, Zap, ArrowRight, Play, BarChart, CheckCircle } from "lucide-react";
 
 // --- PARTICLE CARD COMPONENT (The Animation Engine) ---
+// (Keeping your existing ParticleCard component as is, but adding enhanced features)
 const ParticleCard = ({
   children,
   className = "",
   disableAnimations = false,
   style,
-  particleCount = DEFAULT_PARTICLE_COUNT,
-  glowColor = DEFAULT_GLOW_COLOR,
+  particleCount = 16, // Increased from 12
+  glowColor = "132, 0, 255",
   enableTilt = true,
   clickEffect = true,
   enableMagnetism = true,
-  enableStars = true, // Added prop for particle animation control
+  enableStars = true,
 }) => {
   const cardRef = useRef(null);
   const particlesRef = useRef([]);
@@ -79,7 +58,7 @@ const ParticleCard = ({
   }, []);
 
   const animateParticles = useCallback(() => {
-    if (!cardRef.current || !isHoveredRef.current || !enableStars) return; // Check enableStars here
+    if (!cardRef.current || !isHoveredRef.current || !enableStars) return;
 
     if (!particlesInitialized.current) {
       initializeParticles();
@@ -100,8 +79,8 @@ const ParticleCard = ({
         );
 
         gsap.to(clone, {
-          x: (Math.random() - 0.5) * 100,
-          y: (Math.random() - 0.5) * 100,
+          x: (Math.random() - 0.5) * 120, // Increased movement
+          y: (Math.random() - 0.5) * 120,
           rotation: Math.random() * 360,
           duration: 2 + Math.random() * 2,
           ease: "none",
@@ -116,7 +95,7 @@ const ParticleCard = ({
           repeat: -1,
           yoyo: true,
         });
-      }, index * 100);
+      }, index * 80); // Faster generation
 
       timeoutsRef.current.push(timeoutId);
     });
@@ -170,8 +149,8 @@ const ParticleCard = ({
       const centerY = rect.height / 2;
 
       if (enableTilt) {
-        const rotateX = ((y - centerY) / centerY) * -10;
-        const rotateY = ((x - centerX) / centerX) * 10;
+        const rotateX = ((y - centerY) / centerY) * -12; // Increased sensitivity
+        const rotateY = ((x - centerX) / centerX) * 12;
         gsap.to(element, {
           rotateX,
           rotateY,
@@ -182,8 +161,8 @@ const ParticleCard = ({
       }
 
       if (enableMagnetism) {
-        const magnetX = (x - centerX) * 0.05;
-        const magnetY = (y - centerY) * 0.05;
+        const magnetX = (x - centerX) * 0.08; // Increased magnetism
+        const magnetY = (y - centerY) * 0.08;
         magnetismAnimationRef.current = gsap.to(element, {
           x: magnetX,
           y: magnetY,
@@ -212,7 +191,7 @@ const ParticleCard = ({
         width: ${maxDistance * 2}px;
         height: ${maxDistance * 2}px;
         border-radius: 50%;
-        background: radial-gradient(circle, rgba(${glowColor}, 0.4) 0%, rgba(${glowColor}, 0.2) 30%, transparent 70%);
+        background: radial-gradient(circle, rgba(${glowColor}, 0.6) 0%, rgba(${glowColor}, 0.3) 30%, transparent 70%);
         left: ${x - maxDistance}px;
         top: ${y - maxDistance}px;
         pointer-events: none;
@@ -225,13 +204,41 @@ const ParticleCard = ({
         ripple,
         { scale: 0, opacity: 1 },
         {
-          scale: 1,
+          scale: 1.5, // Larger ripple
           opacity: 0,
-          duration: 0.8,
+          duration: 1,
           ease: "power2.out",
           onComplete: () => ripple.remove(),
         }
       );
+
+      // Add multiple smaller particles on click
+      for (let i = 0; i < 5; i++) {
+        const clickParticle = document.createElement("div");
+        clickParticle.style.cssText = `
+          position: absolute;
+          width: 6px;
+          height: 6px;
+          border-radius: 50%;
+          background: rgba(${glowColor}, 0.8);
+          left: ${x}px;
+          top: ${y}px;
+          pointer-events: none;
+          z-index: 1000;
+        `;
+        
+        element.appendChild(clickParticle);
+        
+        gsap.to(clickParticle, {
+          x: (Math.random() - 0.5) * 100,
+          y: (Math.random() - 0.5) * 100,
+          opacity: 0,
+          scale: 0,
+          duration: 1,
+          ease: "power2.out",
+          onComplete: () => clickParticle.remove(),
+        });
+      }
     };
 
     element.addEventListener("mouseenter", handleMouseEnter);
@@ -269,115 +276,317 @@ const ParticleCard = ({
   );
 };
 
+const createParticleElement = (x, y, color = "132, 0, 255") => {
+  const el = document.createElement("div");
+  el.className = "particle";
+  el.style.cssText = `
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(${color}, 1) 30%, rgba(${color}, 0.3) 100%);
+    box-shadow: 0 0 15px rgba(${color}, 0.8);
+    pointer-events: none;
+    z-index: 100;
+    left: ${x}px;
+    top: ${y}px;
+    filter: blur(0.5px);
+  `;
+  return el;
+};
+
 // --- MAIN SECTION COMPONENT ---
 const ProfessionalBusiness = () => {
-  const customGlowColor = DEFAULT_GLOW_COLOR; // '132, 0, 255'
+  const customGlowColor = "132, 0, 255";
+  const videoRef = useRef(null);
+  const [isPlaying, setIsPlaying] = useState(false);
+
+  const stats = [
+    { value: "90%", label: "Time Saved", icon: <Clock className="w-4 h-4" /> },
+    { value: "99.8%", label: "Accuracy", icon: <CheckCircle className="w-4 h-4" /> },
+    { value: "50K+", label: "Evaluations", icon: <BarChart className="w-4 h-4" /> },
+    { value: "24/7", label: "Availability", icon: <Shield className="w-4 h-4" /> },
+  ];
+
+  const features = [
+    "AI-Powered Plagiarism Detection",
+    "Handwriting Verification",
+    "Real-time Grading",
+    "Detailed Analytics",
+    "Multi-Format Support",
+    "Secure Cloud Storage"
+  ];
+
+  const handlePlayVideo = () => {
+    if (videoRef.current) {
+      videoRef.current.play();
+      setIsPlaying(true);
+    }
+  };
 
   return (
     <>
-      {/* This style block is critical for the border glow and particle appearance.
-        In a production app, move this CSS to a global stylesheet.
-      */}
       <style>{`
-          .card--border-glow::after {
-            content: '';
-            position: absolute;
-            inset: 0;
-            padding: 6px;
-            background: radial-gradient(200px circle at var(--glow-x, 50%) var(--glow-y, 50%),
-                rgba(${customGlowColor}, calc(var(--glow-intensity, 0) * 0.8)) 0%,
-                rgba(${customGlowColor}, calc(var(--glow-intensity, 0) * 0.4)) 30%,
-                transparent 60%);
-            border-radius: inherit;
-            mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-            mask-composite: subtract;
-            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-            -webkit-mask-composite: xor;
-            pointer-events: none;
-            transition: opacity 0.3s ease;
-            z-index: 1;
-          }
-          
-          .card--border-glow:hover::after {
-            opacity: 1;
-            /* Note: The full border glow effect reacts to mouse position via GlobalSpotlight, 
-               but this will give a strong hover effect without it. */
-          }
-          
-          .card--border-glow:hover {
-            box-shadow: 0 4px 20px rgba(46, 24, 78, 0.4), 0 0 30px rgba(${customGlowColor}, 0.2);
-          }
-          
-          .particle {
-             /* Base particle style is inline, but adding ::before here for the shadow */
-          }
-          .particle::before {
-            content: '';
-            position: absolute;
-            top: -2px;
-            left: -2px;
-            right: -2px;
-            bottom: -2px;
-            background: rgba(${customGlowColor}, 0.2);
-            border-radius: 50%;
-            z-index: -1;
-          }
+        .card--border-glow::after {
+          content: '';
+          position: absolute;
+          inset: 0;
+          padding: 3px;
+          background: radial-gradient(300px circle at var(--glow-x, 50%) var(--glow-y, 50%),
+              rgba(${customGlowColor}, calc(var(--glow-intensity, 0) * 1)) 0%,
+              rgba(${customGlowColor}, calc(var(--glow-intensity, 0) * 0.4)) 40%,
+              transparent 70%);
+          border-radius: inherit;
+          mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+          mask-composite: subtract;
+          -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+          -webkit-mask-composite: xor;
+          pointer-events: none;
+          transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+          z-index: 1;
+          opacity: 0;
+        }
+        
+        .card--border-glow:hover::after {
+          opacity: 1;
+          padding: 2px;
+        }
+        
+        .card--border-glow {
+          transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+          background: linear-gradient(135deg, rgba(30, 30, 46, 0.8) 0%, rgba(15, 15, 30, 0.9) 100%);
+        }
+        
+        .card--border-glow:hover {
+          box-shadow: 0 20px 40px rgba(46, 24, 78, 0.4), 
+                      0 0 60px rgba(${customGlowColor}, 0.3),
+                      0 0 100px rgba(${customGlowColor}, 0.1);
+          transform: translateY(-4px);
+        }
+        
+        @keyframes float {
+          0%, 100% { transform: translateY(0px); }
+          50% { transform: translateY(-10px); }
+        }
+        
+        .animate-float {
+          animation: float 3s ease-in-out infinite;
+        }
+        
+        .text-glow {
+          text-shadow: 0 0 20px rgba(${customGlowColor}, 0.5);
+        }
       `}</style>
 
-      <section className=" text-white font-thin py-16 px-4 md:px-12 lg:px-24 min-h-screen flex flex-col justify-start">
-        <h1 className="text-4xl md:text-5xl font-stretch-condensed mb-16 max-w-4xl">
-          Built by Students, for Students 
-        </h1>
+      <section className="relative overflow-hidden bg-gradient-to-b from-gray-900 via-purple-900/10 to-gray-900 py-24 px-4 sm:px-6 lg:px-8">
+        {/* Background Elements */}
+        <div className="absolute inset-0 overflow-hidden">
+          <div className="absolute -top-40 -right-40 w-80 h-80 bg-purple-600/10 rounded-full blur-3xl"></div>
+          <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-blue-600/10 rounded-full blur-3xl"></div>
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full">
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/[0.02] to-transparent animate-pulse"></div>
+          </div>
+        </div>
 
-        <div className="flex flex-col lg:flex-row gap-12 lg:gap-24 items-start">
-          {/* Left Text Column */}
-         <div className="flex-1 max-w-xl text-gray-300 space-y-6 text-sm sm:text-base">
-            <p>
-              Watch how SmartEval automates assignment evaluation — from plagiarism detection
-              to handwriting verification and AI-assisted scoring.
-            </p>
-            <p>
-              Our workflow helps teachers save time, maintain fairness, 
-              and provide detailed insights for every student submission.
-            </p>
-            <p>
-              Each step is automated but fully transparent, ensuring accuracy and efficiency.
-            </p>
-            <p>
-              Students benefit from instant feedback and clear grading reports, making the learning process faster and more reliable.
-            </p>
-            <p>
-              Administrators can monitor progress, generate analytics, and maintain secure records effortlessly.
-            </p>
-            <p>
-              SmartEval supports multiple file types including scanned documents, images, and PDFs, ensuring smooth submission for every student.
+        <div className="relative z-10 max-w-7xl mx-auto">
+          {/* Header */}
+          <div className="text-center mb-16">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-purple-600/20 to-blue-600/20 border border-white/10 backdrop-blur-sm mb-6">
+              <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+              <span className="text-sm font-medium text-white/80">Student-Centric Innovation</span>
+            </div>
+            
+            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white mb-6">
+              <span className="bg-gradient-to-r from-white via-purple-200 to-blue-200 bg-clip-text text-transparent">
+                Built by Students,
+              </span>
+              <br />
+              <span className="text-white">for Students</span>
+            </h1>
+            
+            <p className="text-xl text-white/60 max-w-3xl mx-auto">
+              Empowering educators with intelligent tools designed by the very learners they serve
             </p>
           </div>
 
-          {/* Right Animated Card */}
-          <div className="flex-none w-full lg:w-[560px] h-[360px] md:h-[480px]">
-            <ParticleCard
-              className="relative flex flex-col justify-center items-center p-6 md:p-8 rounded-2xl shadow-xl 
-                         border border-gray-700/50 h-full w-full
-                         transition-all duration-300 hover:shadow-2xl hover:border-indigo-500/50 
-                         card--border-glow"
-              glowColor={customGlowColor}
-              enableTilt={true}
-              enableMagnetism={true}
-              clickEffect={true}
-              enableStars={true}
-              particleCount={10}
-            >
-              {/* Abstract Wave Background Image */}
-              <img
-                src="https://image.pollinations.ai/prompt/abstract%20wave%20lines%20purple%20with%20central%20glow%20on%20dark%20background"
-                alt="Abstract wave lines"
-                className="absolute inset-0 w-full h-full object-cover rounded-2xl opacity-80"
-              />
+          {/* Main Content Grid */}
+          <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-start mb-20">
+            {/* Left Column - Text & Features */}
+            <div className="space-y-8">
+              {/* Introduction */}
+              <div className="bg-gradient-to-br from-gray-900/50 to-gray-900/30 backdrop-blur-sm rounded-2xl border border-white/10 p-8">
+                <div className="flex items-center gap-3 mb-6">
+                  <div className="p-2 rounded-lg bg-gradient-to-r from-purple-600/20 to-blue-600/20 border border-white/10">
+                    <Sparkles className="w-5 h-5 text-purple-300" />
+                  </div>
+                  <h3 className="text-2xl font-bold text-white">Revolutionizing Academic Evaluation</h3>
+                </div>
+                <p className="text-white/70 mb-4">
+                  Watch how SmartEval automates assignment evaluation — from plagiarism detection
+                  to handwriting verification and AI-assisted scoring.
+                </p>
+                <p className="text-white/70">
+                  Our workflow helps teachers save time, maintain fairness, 
+                  and provide detailed insights for every student submission.
+                </p>
+              </div>
 
-              {/* Placeholder Content for the Card */}
-              <div className="relative z-10 text-center text-white p-4"></div>
-            </ParticleCard>
+              {/* Features List */}
+              <div className="bg-gradient-to-br from-gray-900/50 to-gray-900/30 backdrop-blur-sm rounded-2xl border border-white/10 p-8">
+                <h3 className="text-xl font-bold text-white mb-6">Core Features</h3>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  {features.map((feature, index) => (
+                    <div key={index} className="flex items-center gap-3 p-3 rounded-lg bg-white/5 hover:bg-white/10 transition-all duration-300">
+                      <div className="w-2 h-2 rounded-full bg-gradient-to-r from-purple-600 to-blue-600"></div>
+                      <span className="text-white/80 text-sm">{feature}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Stats */}
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                {stats.map((stat, index) => (
+                  <div key={index} className="bg-gradient-to-br from-gray-900/50 to-gray-900/30 backdrop-blur-sm rounded-xl border border-white/10 p-4 text-center">
+                    <div className="flex justify-center mb-2 text-purple-300">
+                      {stat.icon}
+                    </div>
+                    <div className="text-2xl font-bold text-white mb-1">{stat.value}</div>
+                    <div className="text-xs text-white/60">{stat.label}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Right Column - Interactive Card */}
+            <div className="relative">
+              <ParticleCard
+                className="relative flex flex-col justify-center items-center rounded-3xl shadow-xl 
+                           border border-white/10 h-[500px] w-full overflow-hidden
+                           card--border-glow"
+                glowColor={customGlowColor}
+                enableTilt={true}
+                enableMagnetism={true}
+                clickEffect={true}
+                enableStars={true}
+                particleCount={20}
+              >
+                {/* Video Container */}
+                <div className="absolute inset-0 overflow-hidden rounded-3xl">
+                  {!isPlaying ? (
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <div className="absolute inset-0 bg-gradient-to-br from-purple-900/30 to-blue-900/30"></div>
+                      <div className="relative z-10 text-center">
+                        <button
+                          onClick={handlePlayVideo}
+                          className="group relative w-20 h-20 rounded-full bg-gradient-to-r from-purple-600 to-blue-600 flex items-center justify-center hover:scale-110 transition-all duration-300"
+                        >
+                          <Play className="w-8 h-8 text-white ml-1" />
+                          <div className="absolute inset-0 rounded-full bg-gradient-to-r from-purple-600 to-blue-600 blur-md opacity-50 group-hover:opacity-100 transition-opacity duration-300"></div>
+                        </button>
+                        <p className="mt-4 text-white/80 text-sm">Click to watch demo</p>
+                      </div>
+                    </div>
+                  ) : (
+                    <video
+                      ref={videoRef}
+                      className="w-full h-full object-cover"
+                      controls
+                      onEnded={() => setIsPlaying(false)}
+                    >
+                      <source src="https://assets.mixkit.co/videos/preview/mixkit-abstract-waves-on-a-dark-background-3649-large.mp4" type="video/mp4" />
+                    </video>
+                  )}
+                  
+                  {/* Animated Background Gradient */}
+                  <div className="absolute inset-0 bg-gradient-to-tr from-purple-900/20 via-transparent to-blue-900/20"></div>
+                  
+                  {/* Animated Lines Overlay */}
+                  <div className="absolute inset-0 opacity-30">
+                    <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-purple-500 to-transparent animate-pulse"></div>
+                    <div className="absolute top-1/4 left-0 w-full h-px bg-gradient-to-r from-transparent via-blue-500 to-transparent animate-pulse delay-300"></div>
+                    <div className="absolute top-1/2 left-0 w-full h-px bg-gradient-to-r from-transparent via-purple-500 to-transparent animate-pulse delay-600"></div>
+                    <div className="absolute top-3/4 left-0 w-full h-px bg-gradient-to-r from-transparent via-blue-500 to-transparent animate-pulse delay-900"></div>
+                  </div>
+                </div>
+
+                {/* Card Content */}
+                <div className="relative z-10 w-full h-full p-8 flex flex-col justify-between">
+                  {/* Top Badge */}
+                  <div className="self-start">
+                    <div className="px-4 py-2 rounded-full bg-gradient-to-r from-purple-600/20 to-blue-600/20 backdrop-blur-sm border border-white/10">
+                      <span className="text-sm font-medium text-white flex items-center gap-2">
+                        <Zap className="w-3 h-3" />
+                        LIVE DEMO
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Center Content */}
+                  <div className="text-center">
+                    <h3 className="text-3xl font-bold text-white mb-4 text-glow">
+                      SmartEval in Action
+                    </h3>
+                    <p className="text-white/70 mb-6">
+                      Experience the future of academic evaluation with our interactive demo
+                    </p>
+                    <div className="flex items-center justify-center gap-4">
+                      <div className="w-3 h-3 rounded-full bg-green-400 animate-pulse"></div>
+                      <span className="text-sm text-white/60">Real-time Processing</span>
+                    </div>
+                  </div>
+
+                  {/* Bottom Stats */}
+                  <div className="flex justify-between items-center">
+                    <div className="text-center">
+                      <div className="text-2xl font-bold text-white">0.5s</div>
+                      <div className="text-xs text-white/50">Response Time</div>
+                    </div>
+                    <div className="text-center">
+                      <div className="text-2xl font-bold text-white">99%</div>
+                      <div className="text-xs text-white/50">Accuracy Rate</div>
+                    </div>
+                    <div className="text-center">
+                      <div className="text-2xl font-bold text-white">10x</div>
+                      <div className="text-xs text-white/50">Faster Grading</div>
+                    </div>
+                  </div>
+                </div>
+              </ParticleCard>
+
+              {/* Floating Elements */}
+              <div className="absolute -top-4 -right-4 w-24 h-24 bg-gradient-to-r from-purple-600/20 to-blue-600/20 rounded-full blur-xl animate-float"></div>
+              <div className="absolute -bottom-4 -left-4 w-16 h-16 bg-gradient-to-r from-blue-600/20 to-cyan-600/20 rounded-full blur-xl animate-float" style={{ animationDelay: '1.5s' }}></div>
+            </div>
+          </div>
+
+          {/* CTA Section */}
+          <div className="relative rounded-3xl overflow-hidden">
+            <div className="absolute inset-0 bg-gradient-to-r from-purple-600/10 via-blue-600/10 to-cyan-600/10"></div>
+            <div className="relative z-10 p-12 text-center">
+              <div className="max-w-3xl mx-auto">
+                <h3 className="text-3xl font-bold text-white mb-4">
+                  Join the Education Revolution
+                </h3>
+                <p className="text-xl text-white/60 mb-8">
+                  Thousands of educators are already transforming their evaluation process with SmartEval
+                </p>
+                <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                  <button className="group px-8 py-4 rounded-full bg-gradient-to-r from-purple-600 to-blue-600 text-white font-medium hover:shadow-2xl hover:shadow-purple-500/30 transition-all duration-300 hover:scale-105">
+                    <span className="flex items-center gap-3">
+                      Start Free Trial
+                      <ArrowRight className="w-5 h-5 transition-transform group-hover:translate-x-1" />
+                    </span>
+                  </button>
+                  <button className="px-8 py-4 rounded-full bg-white/10 backdrop-blur-sm text-white font-medium border border-white/20 hover:bg-white/20 transition-all duration-300">
+                    <span className="flex items-center gap-3">
+                      <Download className="w-5 h-5" />
+                      Download Whitepaper
+                    </span>
+                  </button>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </section>
