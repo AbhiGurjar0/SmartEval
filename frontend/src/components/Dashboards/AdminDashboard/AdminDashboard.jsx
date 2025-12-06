@@ -117,15 +117,15 @@ const AdminDashboard = () => {
   const [subjectsData, setsubjectsData] = useState([]);
   const [teacherData, setTeachersData] = useState([]);
   const [allocations, setAllocations] = useState([]);
-  
+
   // Dynamic User List (Replaces hardcoded data)
-  const [users, setUsers] = useState([]); 
-  
+  const [users, setUsers] = useState([]);
+
   // Dynamic Stats (Replaces static stats)
   const [stats, setStats] = useState({
     totalStudents: 0,
     totalTeachers: 0,
-    pendingEnrollments: 0, 
+    pendingEnrollments: 0,
     systemStatus: "Operational",
   });
 
@@ -154,8 +154,8 @@ const AdminDashboard = () => {
       subjects.forEach((subject) => {
         if (subject.allotedTeacher) {
           // Handle both object and array cases for safety
-          const teacherObj = Array.isArray(subject.allotedTeacher) 
-            ? subject.allotedTeacher[0] 
+          const teacherObj = Array.isArray(subject.allotedTeacher)
+            ? subject.allotedTeacher[0]
             : subject.allotedTeacher;
 
           if (teacherObj) {
@@ -250,16 +250,16 @@ const AdminDashboard = () => {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(subjectPayload),
         });
-        
+
         const data = await res.json();
 
         if (data.success) {
           const newSubjectForState = {
             id: data.data?._id || Date.now(),
-            _id: data.data?._id || Date.now(), 
+            _id: data.data?._id || Date.now(),
             name: newSubject.name,
             courseCode: newSubject.code.toUpperCase(),
-            credit: parseInt(newSubject.credits)
+            credit: parseInt(newSubject.credits),
           };
           setsubjectsData((prev) => [...prev, newSubjectForState]);
           setNewSubject({ name: "", code: "", credits: "" });
@@ -290,8 +290,12 @@ const AdminDashboard = () => {
       return;
     }
 
-    const teacher = teacherData.find((t) => String(t._id) === String(newAllocation.teacherId));
-    const subject = subjectsData.find((s) => String(s._id) === String(newAllocation.subjectId));
+    const teacher = teacherData.find(
+      (t) => String(t._id) === String(newAllocation.teacherId)
+    );
+    const subject = subjectsData.find(
+      (s) => String(s._id) === String(newAllocation.subjectId)
+    );
 
     if (teacher && subject) {
       try {
@@ -311,7 +315,7 @@ const AdminDashboard = () => {
             id: Date.now(),
             teacherId: teacher._id,
             teacherName: teacher.name,
-            subjectId: subject.courseCode, 
+            subjectId: subject.courseCode,
             subjectName: subject.name,
           };
           setAllocations((prev) => [...prev, newAllocationEntry]);
@@ -390,13 +394,13 @@ const AdminDashboard = () => {
           <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-6">
             <Card
               title="Total Students"
-              value={stats.totalStudents} 
+              value={stats.totalStudents}
               icon={Users}
               colorClass="text-indigo-400"
             />
             <Card
               title="Total Teachers"
-              value={stats.totalTeachers} 
+              value={stats.totalTeachers}
               icon={User}
               colorClass="text-green-400"
             />
@@ -415,7 +419,7 @@ const AdminDashboard = () => {
           </div>
 
           {/* Registered Users Table */}
-         
+
           <div className="max-w-7xl mx-auto">
             <h3 className="text-2xl font-semibold text-white pt-4 border-t border-gray-800 mb-6">
               User Database ({users.length})

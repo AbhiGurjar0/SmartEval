@@ -69,12 +69,11 @@ const TeacherDashboard = () => {
   const { user } = useAuth();
   const { subjects } = useTeacher();
 
-useEffect(() => {
-  if (subjects) {
-    setAssignments(subjects.assignments || []);
-  }
-}, [subjects]);
-
+  useEffect(() => {
+    if (subjects) {
+      setAssignments(subjects.assignments || []);
+    }
+  }, [subjects]);
 
   console.log(subjects, "from techaser dash");
 
@@ -108,7 +107,7 @@ useEffect(() => {
         </h3>
 
         <div className="space-y-5">
-          {assignments.map((assignment,count) => {
+          {assignments.map((assignment, count) => {
             const isCompleted =
               assignment.remaining === 0 && assignment.totalSubmitted > 0;
             const borderColor = isCompleted
@@ -123,8 +122,7 @@ useEffect(() => {
                 {/* Assignment Title Row */}
                 <div className="p-5 bg-gray-900/80 border-b border-gray-800/50 flex justify-between items-center">
                   <h4 className="text-lg font-bold text-white truncate pr-4">
-                    Assignement  {count+1} : {assignment.name}
-                    
+                    Assignement {count + 1} : {assignment.name}
                   </h4>
                   {isCompleted && (
                     <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-500/10 text-green-400 border border-green-500/20">

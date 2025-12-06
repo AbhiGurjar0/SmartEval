@@ -200,45 +200,9 @@ export default function Features() {
           ))}
         </div>
 
-        {/* CTA Section */}
-        <div className="relative rounded-3xl overflow-hidden mb-20">
-          <div className="absolute inset-0 bg-gradient-to-r from-purple-600/20 via-blue-600/20 to-cyan-600/20"></div>
-          <div className="relative z-10 p-12 text-center">
-            <div className="max-w-3xl mx-auto">
-              <h2 className="text-4xl font-bold text-white mb-6">
-                Ready to Transform Your Evaluation Process?
-              </h2>
-              <p className="text-xl text-white/70 mb-10">
-                Join thousands of educators who trust SmartEval for accurate,
-                efficient, and intelligent assessment.
-              </p>
-              <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <button className="group px-8 py-4 rounded-full bg-gradient-to-r from-purple-600 to-blue-600 text-white font-medium hover:shadow-2xl hover:shadow-purple-500/30 transition-all duration-300 hover:scale-105">
-                  <span className="flex items-center gap-3">
-                    Start Free Trial
-                    <IoIosArrowRoundForward className="w-6 h-6 transition-transform group-hover:translate-x-1" />
-                  </span>
-                </button>
-                <button className="px-8 py-4 rounded-full bg-white/10 backdrop-blur-sm text-white font-medium border border-white/20 hover:bg-white/20 transition-all duration-300">
-                  Schedule Demo
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-
         <FeatureSection />
 
-        {/* Read More Button */}
-        <div className="flex justify-center mb-20">
-          <button className="group relative overflow-hidden px-8 py-4 rounded-full border border-white/20 bg-white/5 backdrop-blur-sm hover:bg-white/10 transition-all duration-300">
-            <span className="flex items-center gap-3 text-white font-medium">
-              Read More Features
-              <IoIosArrowRoundForward className="w-6 h-6 transition-transform group-hover:translate-x-1" />
-            </span>
-            <div className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/20 to-transparent group-hover:animate-shimmer"></div>
-          </button>
-        </div>
+       
 
         <ProfessionalBusiness />
       </div>
