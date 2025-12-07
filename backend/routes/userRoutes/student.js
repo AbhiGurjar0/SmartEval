@@ -81,7 +81,21 @@ router.get("/allSubjects", isLoggedIn, async (req, res) => {
     .find({})
     .populate({
       path: "assignments",
-      populate: { path: "subject" },
+      populate: [
+        // Use ARRAY for multiple populates
+        {
+          path: "subject",
+          model: "Subject",
+        },
+        {
+          path: "submissions",
+          model: "AssignmentSol",
+          populate: {
+            path: "studentId",
+            model: "Student",
+          },
+        },
+      ],
     })
     .populate("allotedTeacher");
   res.json({ success: true, subjects: allSubject });

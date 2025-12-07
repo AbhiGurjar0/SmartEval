@@ -26,12 +26,14 @@ import {
   MapPin,
 } from "lucide-react";
 import { useUser } from "../../../context/UserContext";
+import { useAuth } from "../../../context/AuthContext";
 import { useContext } from "react";
 import { useState, useEffect } from "react";
 
 const StudentDashboard = () => {
+  const { user } = useAuth();
   const navigate = useNavigate();
-  const { subjects, setSubjects, user, logout } = useUser(); // Assuming logout function exists
+  const { subjects, setSubjects, logout } = useUser(); // Assuming logout function exists
   const [enrolledSubjects, setEnrolledSubjects] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [filter, setFilter] = useState("all");
@@ -402,29 +404,39 @@ const StudentDashboard = () => {
 
                     {/* Progress Bar */}
                     <div className="mb-6">
-                      <div className="flex justify-between text-xs mb-1">
-                        <span className="text-white/60">Progress</span>
-                        <span className="text-white">
-                          {Math.round(
-                            ((subject.totalAssignments - subject.pending) /
-                              subject.totalAssignments) *
-                              100
-                          ) || 0}
-                          %
-                        </span>
-                      </div>
-                      <div className="h-1 rounded-full bg-white/10 overflow-hidden">
-                        <div
-                          className="h-full rounded-full bg-gradient-to-r from-purple-600 to-blue-600 transition-all duration-500"
-                          style={{
-                            width: `${
-                              ((subject.totalAssignments - subject.pending) /
-                                subject.totalAssignments) *
-                                100 || 0
-                            }%`,
-                          }}
-                        ></div>
-                      </div>
+                      {(() => {
+                        const submittedCount = subject.assignments.filter(
+                          (assign) =>
+                            assign.submissions?.some(
+                              (sub) => sub.studentId._id === user._id
+                            )
+                        ).length;
+
+                        const percentage = subject.assignments.length
+                          ? Math.round(
+                              (submittedCount / subject.assignments.length) *
+                                100
+                            )
+                          : 0;
+
+                        return (
+                          <>
+                            <div className="flex justify-between text-xs mb-1">
+                              <span className="text-white/60">Progress</span>
+                              <span className="text-white">{percentage}%</span>
+                            </div>
+
+                            <div className="h-1 rounded-full bg-white/10 overflow-hidden">
+                              <div
+                                className="h-full rounded-full bg-gradient-to-r from-purple-600 to-blue-600 transition-all duration-500"
+                                style={{
+                                  width: `${percentage}%`,
+                                }}
+                              ></div>
+                            </div>
+                          </>
+                        );
+                      })()}
                     </div>
 
                     {/* Footer */}
@@ -433,7 +445,7 @@ const StudentDashboard = () => {
                         <div className="flex items-center gap-2">
                           <FileText className="h-4 w-4 text-white/40" />
                           <span className="text-sm text-white/60">
-                            {subject.totalAssignments || 0} assignments
+                            {subject.assignments.length || 0} assignments
                           </span>
                         </div>
                         <div className="flex items-center gap-2">

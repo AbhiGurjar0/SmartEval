@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useUser } from "../../../context/UserContext";
+import { useAuth } from "../../../context/AuthContext";
 
 import {
   ChevronLeft,
@@ -13,27 +14,42 @@ import {
 } from "lucide-react";
 
 const StudentSubjectDetails = () => {
-  const { id } = useParams();
+  const { subjectId } = useParams();
   const [assignments, setAssignments] = useState([]);
   const [subject, setSubject] = useState(null);
   const { subjects } = useUser();
+  const { user } = useAuth();
 
   useEffect(() => {
     if (subjects) {
-      const found = subjects.find((s) => s._id === id);
+      const found = subjects.find((s) => s._id === subjectId);
+
       if (found) {
-        console.log("found");
         setSubject(found);
-        setAssignments(found.assignments || []);
+        console.log("founded",found)
+
+        // Create updated assignments list
+        const updatedAssignments =
+          found.assignments?.map((assign) => {
+            const submitted = assign.submissions?.find(
+              (sub) => sub?.studentId?._id === user?._id
+            );
+
+            return {
+              ...assign,
+              status: submitted ? "Completed" : "Pending",
+            };
+          }) || [];
+
+        setAssignments(updatedAssignments);
       }
     }
-  }, [subjects, id]);
+  }, [subjects, subjectId, user]);
 
- 
   const navigate = useNavigate();
 
   const handleAssignmentClick = (assignmentId) => {
-    navigate(`/student/subject/${id}/assignment/${assignmentId}`);
+    navigate(`/student/subject/${subjectId}/assignment/${assignmentId}`);
   };
 
   return (
@@ -79,7 +95,7 @@ const StudentSubjectDetails = () => {
       {/* Assignments List */}
       <div className="max-w-5xl mx-auto space-y-4">
         {assignments &&
-          assignments.map((assignment,number) => (
+          assignments.map((assignment, number) => (
             <div
               key={assignment._id}
               className={`p-6 rounded-xl border transition-all duration-300 ${
@@ -110,7 +126,7 @@ const StudentSubjectDetails = () => {
                         assignment.locked ? "text-gray-500" : "text-white"
                       }`}
                     >
-                     Assignment {number+1} : {assignment.name}
+                      Assignment {number + 1} : {assignment.name}
                     </h3>
                     <div className="flex items-center text-sm text-gray-500 mt-1">
                       <Clock className="h-3 w-3 mr-1" />

@@ -45,7 +45,7 @@ function App() {
                       element={<StudentDashboard />}
                     />
                     <Route
-                      path="/student/subject/:id"
+                      path="/student/subject/:subjectId"
                       element={<StudentSubjectDetails />}
                     />
                     <Route

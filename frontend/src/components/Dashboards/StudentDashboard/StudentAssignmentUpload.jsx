@@ -13,6 +13,7 @@ import {
   Download,
 } from "lucide-react";
 import { useUser } from "../../../context/UserContext";
+import { useAuth } from "../../../context/AuthContext";
 
 const StudentAssignmentUpload = () => {
   // Get params from URL
@@ -20,10 +21,13 @@ const StudentAssignmentUpload = () => {
   const navigate = useNavigate();
   const [data, setData] = useState(null);
   const { subjects } = useUser();
+  const { user } = useAuth();
   console.log("Data at using ", subjects);
 
   // State
   const [status, setStatus] = useState("Pending");
+  const [obMarks, setObMarks] = useState(null);
+  const [greaded, setGraded] = useState(null);
   const [file, setFile] = useState(null);
   const [uploadProgress, setUploadProgress] = useState(0);
   const [submittedFileName, setSubmittedFileName] = useState(null);
@@ -39,9 +43,19 @@ const StudentAssignmentUpload = () => {
         );
         if (foundAssignment) {
           console.log("founded2", foundAssignment);
+          const foundSolution = foundAssignment.submissions.find(
+            (sub) => sub.studentId._id === user._id
+          );
+          if (foundSolution) {
+            setStatus("Submitted");
+          }
+          if (foundSolution?.status === "Completed") {
+            setGraded("Completed");
+            setObMarks(foundSolution.marks);
+          }
+
           setData(foundAssignment);
-          // Set initial status from assignment data
-          setStatus(foundAssignment.status || "Pending");
+
           setSubmittedFileName(foundAssignment.submittedFile || null);
           setSubmissionTime(foundAssignment.submissionDate || null);
         }
@@ -223,7 +237,7 @@ const StudentAssignmentUpload = () => {
             <p className="text-xs text-gray-400 uppercase tracking-wider">
               Max Marks
             </p>
-            <p className="font-semibold">{data.maxScore || 100}</p>
+            <p className="font-semibold">{data.marks || 100}</p>
           </div>
         </div>
       </div>
@@ -367,8 +381,8 @@ const StudentAssignmentUpload = () => {
                 <p className="text-xs text-gray-500 uppercase tracking-wider mb-1">
                   Current Status
                 </p>
-                {status === "Submitted" || status === "Completed" ? (
-                  data.score ? (
+                {greaded === "Submitted" || greaded === "Completed" ? (
+                  obMarks ? (
                     <span className="text-green-400 font-medium flex items-center bg-green-500/10 px-3 py-1 rounded w-fit">
                       <CheckCircle className="h-4 w-4 mr-2" /> Graded
                     </span>
@@ -389,16 +403,16 @@ const StudentAssignmentUpload = () => {
                   Score
                 </p>
                 <p className="text-3xl font-bold text-white tracking-tight">
-                  {data.score ? (
+                  {obMarks ? (
                     <span className="text-green-400">
-                      {data.score}{" "}
+                      {obMarks}{" "}
                       <span className="text-lg text-gray-500">
-                        / {data.maxScore || 100}
+                        / {data.marks || 100}
                       </span>
                     </span>
                   ) : (
                     <span className="text-gray-500">
-                      -- / {data.maxScore || 100}
+                      -- / {data.marks || 100}
                     </span>
                   )}
                 </p>

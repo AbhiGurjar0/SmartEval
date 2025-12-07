@@ -35,12 +35,14 @@ export const teacherLogin = async (req, res) => {
     process.env.JWT_SECRET,
     { expiresIn: "7d" }
   );
+  console.log(token)
 
   res.cookie("token", token, {
     httpOnly: true,
     sameSite: "lax",
     secure: false,
   });
+  console.log(res.cookie.token);
 
   req.flash("success", "Teacher Logged In Successfully 🎉");
   return res.json({

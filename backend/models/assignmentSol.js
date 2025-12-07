@@ -13,7 +13,6 @@ const assignmentSolSchema = new mongoose.Schema({
     ref: "Assignment",
     required: true,
   },
-  
   status: {
     type: String,
     enum: ["Pending", "Submitted"],
@@ -26,6 +25,7 @@ const assignmentSolSchema = new mongoose.Schema({
   },
   marks: Number,
   feedback: String,
+  
  
 });
 

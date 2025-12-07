@@ -6,10 +6,11 @@ import Students from "../../models/student.js";
 import { isLoggedIn } from "../../middlewares/isLoggedIn.js";
 import Assignments from "../../models/assignment.js";
 import subjects from "../../models/subjects.js";
+import AssignmentSol from "../../models/assignmentSol.js";
 
 router.post("/addAssignment", isLoggedIn, async (req, res) => {
   try {
-    if (req.user.role.toLowerCase() != "teacher") {
+    if (req?.user?.role?.toLowerCase() != "teacher") {
       return res.json("Only Teacher Can Access This");
     }
     let teacher = await Teachers.findById(req.user.id);
@@ -70,7 +71,18 @@ router.get("/allDetails", isLoggedIn, async (req, res) => {
       return res.json({ success: false, message: "Authorization problem" });
     }
     let subjectId = teacher.subjectsAlloted;
-    let subject = await Subjects.findById(subjectId).populate("assignments");
+    // More common structure:
+    let subject = await Subjects.findById(subjectId).populate({
+      path: "assignments",
+      populate: {
+        path: "submissions",
+        model: "AssignmentSol",
+        populate: {
+          path: "studentId", // Populate student info inside submissions
+          model: "Student",
+        },
+      },
+    });
     // let allStudents = await Students.find({});
     return res.json({
       success: true,
@@ -80,6 +92,28 @@ router.get("/allDetails", isLoggedIn, async (req, res) => {
   } catch (err) {
     console.log(err);
     return res.json({ success: false, message: "Error in subject fetching" });
+  }
+});
+
+router.patch("/addMarks", async (req, res) => {
+  try {
+    let { solutionId, score, reviewMessage } = req.body;
+
+    let evaluted = await AssignmentSol.findByIdAndUpdate(
+      solutionId,
+      {
+        marks: score,
+        status: "Completed",
+        feedback: reviewMessage,
+      },
+      {
+        new: true,
+      }
+    );
+    return res.json({ success: true, message: "Marks Added Successfully" });
+  } catch (err) {
+    console.log(err);
+    return res.json({ success: false, message: "error in evaluation" });
   }
 });
 

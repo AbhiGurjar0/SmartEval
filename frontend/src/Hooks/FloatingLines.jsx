@@ -12,7 +12,7 @@ import {
 } from 'three';
 
 const vertexShader = `
-precision highp float;
+precision mediump float;
 
 void main() {
   gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
@@ -20,7 +20,7 @@ void main() {
 `;
 
 const fragmentShader = `
-precision highp float;
+precision mediump float;
 
 uniform float iTime;
 uniform vec3  iResolution;
@@ -60,16 +60,16 @@ const vec3 PINK  = vec3(233.0, 71.0, 245.0) / 255.0;
 const vec3 BLUE  = vec3(47.0,  75.0, 162.0) / 255.0;
 
 mat2 rotate(float r) {
-  return mat2(cos(r), sin(r), -sin(r), cos(r));
+  float c = cos(r);
+  float s = sin(r);
+  return mat2(c, s, -s, c);
 }
 
 vec3 background_color(vec2 uv) {
-  vec3 col = vec3(0.0);
-
   float y = sin(uv.x - 0.2) * 0.3 - 0.1;
   float m = uv.y - y;
 
-  col += mix(BLUE, BLACK, smoothstep(0.0, 1.0, abs(m)));
+  vec3 col = mix(BLUE, BLACK, smoothstep(0.0, 1.0, abs(m)));
   col += mix(PINK, BLACK, smoothstep(0.0, 1.0, abs(m - 0.8)));
   return col * 0.5;
 }
@@ -79,27 +79,20 @@ vec3 getLineColor(float t, vec3 baseColor) {
     return baseColor;
   }
 
-  vec3 gradientColor;
-  
   if (lineGradientCount == 1) {
-    gradientColor = lineGradient[0];
-  } else {
-    float clampedT = clamp(t, 0.0, 0.9999);
-    float scaled = clampedT * float(lineGradientCount - 1);
-    int idx = int(floor(scaled));
-    float f = fract(scaled);
-    int idx2 = min(idx + 1, lineGradientCount - 1);
-
-    vec3 c1 = lineGradient[idx];
-    vec3 c2 = lineGradient[idx2];
-    
-    gradientColor = mix(c1, c2, f);
+    return lineGradient[0] * 0.5;
   }
-  
-  return gradientColor * 0.5;
+
+  float clampedT = clamp(t, 0.0, 0.9999);
+  float scaled = clampedT * float(lineGradientCount - 1);
+  int idx = int(floor(scaled));
+  float f = fract(scaled);
+  int idx2 = min(idx + 1, lineGradientCount - 1);
+
+  return mix(lineGradient[idx], lineGradient[idx2], f) * 0.5;
 }
 
-  float wave(vec2 uv, float offset, vec2 screenUv, vec2 mouseUv, bool shouldBend) {
+float wave(vec2 uv, float offset, vec2 screenUv, vec2 mouseUv, bool shouldBend) {
   float time = iTime * animationSpeed;
 
   float x_offset   = offset;
@@ -109,7 +102,7 @@ vec3 getLineColor(float t, vec3 baseColor) {
 
   if (shouldBend) {
     vec2 d = screenUv - mouseUv;
-    float influence = exp(-dot(d, d) * bendRadius); // radial falloff around cursor
+    float influence = exp(-dot(d, d) * bendRadius);
     float bendOffset = (mouseUv.y - screenUv.y) * influence * bendStrength * bendInfluence;
     y += bendOffset;
   }
@@ -127,7 +120,6 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
   }
 
   vec3 col = vec3(0.0);
-
   vec3 b = lineGradientCount > 0 ? vec3(0.0) : background_color(baseUv);
 
   vec2 mouseUv = vec2(0.0);
@@ -136,14 +128,20 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
     mouseUv.y *= -1.0;
   }
   
+  float baseLength = length(baseUv);
+  float logLength = log(baseLength + 1.0);
+  
   if (enableBottom) {
-    for (int i = 0; i < bottomLineCount; ++i) {
+    float angle = bottomWavePosition.z * logLength;
+    vec2 ruv = baseUv * rotate(angle);
+    
+    for (int i = 0; i < 20; ++i) {
+      if (i >= bottomLineCount) break;
+      
       float fi = float(i);
       float t = fi / max(float(bottomLineCount - 1), 1.0);
       vec3 lineCol = getLineColor(t, b);
       
-      float angle = bottomWavePosition.z * log(length(baseUv) + 1.0);
-      vec2 ruv = baseUv * rotate(angle);
       col += lineCol * wave(
         ruv + vec2(bottomLineDistance * fi + bottomWavePosition.x, bottomWavePosition.y),
         1.5 + 0.2 * fi,
@@ -155,13 +153,16 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
   }
 
   if (enableMiddle) {
-    for (int i = 0; i < middleLineCount; ++i) {
+    float angle = middleWavePosition.z * logLength;
+    vec2 ruv = baseUv * rotate(angle);
+    
+    for (int i = 0; i < 20; ++i) {
+      if (i >= middleLineCount) break;
+      
       float fi = float(i);
       float t = fi / max(float(middleLineCount - 1), 1.0);
       vec3 lineCol = getLineColor(t, b);
       
-      float angle = middleWavePosition.z * log(length(baseUv) + 1.0);
-      vec2 ruv = baseUv * rotate(angle);
       col += lineCol * wave(
         ruv + vec2(middleLineDistance * fi + middleWavePosition.x, middleWavePosition.y),
         2.0 + 0.15 * fi,
@@ -173,14 +174,17 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
   }
 
   if (enableTop) {
-    for (int i = 0; i < topLineCount; ++i) {
+    float angle = topWavePosition.z * logLength;
+    vec2 ruv = baseUv * rotate(angle);
+    ruv.x *= -1.0;
+    
+    for (int i = 0; i < 20; ++i) {
+      if (i >= topLineCount) break;
+      
       float fi = float(i);
       float t = fi / max(float(topLineCount - 1), 1.0);
       vec3 lineCol = getLineColor(t, b);
       
-      float angle = topWavePosition.z * log(length(baseUv) + 1.0);
-      vec2 ruv = baseUv * rotate(angle);
-      ruv.x *= -1.0;
       col += lineCol * wave(
         ruv + vec2(topLineDistance * fi + topWavePosition.x, topWavePosition.y),
         1.0 + 0.2 * fi,
@@ -205,14 +209,9 @@ const MAX_GRADIENT_STOPS = 8;
 
 function hexToVec3(hex) {
   let value = hex.trim();
+  if (value.startsWith('#')) value = value.slice(1);
 
-  if (value.startsWith('#')) {
-    value = value.slice(1);
-  }
-
-  let r = 255;
-  let g = 255;
-  let b = 255;
+  let r = 255, g = 255, b = 255;
 
   if (value.length === 3) {
     r = parseInt(value[0] + value[0], 16);
@@ -245,6 +244,8 @@ export default function FloatingLines({
   mixBlendMode = 'screen'
 }) {
   const containerRef = useRef(null);
+  const sceneRef = useRef(null);
+  const rendererRef = useRef(null);
   const targetMouseRef = useRef(new Vector2(-1000, -1000));
   const currentMouseRef = useRef(new Vector2(-1000, -1000));
   const targetInfluenceRef = useRef(0);
@@ -278,15 +279,19 @@ export default function FloatingLines({
     if (!containerRef.current) return;
 
     const scene = new Scene();
+    sceneRef.current = scene;
 
     const camera = new OrthographicCamera(-1, 1, 1, -1, 0, 1);
     camera.position.z = 1;
 
-    const renderer = new WebGLRenderer({ antialias: true, alpha: false });
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
-    renderer.domElement.style.width = '100%';
-    renderer.domElement.style.height = '100%';
+    const renderer = new WebGLRenderer({ 
+      antialias: false,
+      alpha: false,
+      powerPreference: 'high-performance'
+    });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.5));
     containerRef.current.appendChild(renderer.domElement);
+    rendererRef.current = renderer;
 
     const uniforms = {
       iTime: { value: 0 },
@@ -352,7 +357,8 @@ export default function FloatingLines({
     const material = new ShaderMaterial({
       uniforms,
       vertexShader,
-      fragmentShader
+      fragmentShader,
+      precision: 'mediump'
     });
 
     const geometry = new PlaneGeometry(2, 2);
@@ -363,6 +369,8 @@ export default function FloatingLines({
 
     const setSize = () => {
       const el = containerRef.current;
+      if (!el) return;
+      
       const width = el.clientWidth || 1;
       const height = el.clientHeight || 1;
 
@@ -432,12 +440,12 @@ export default function FloatingLines({
 
     return () => {
       cancelAnimationFrame(raf);
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-      if (ro && containerRef.current) {
+      
+      if (ro) {
         ro.disconnect();
       }
 
-      if (interactive) {
+      if (interactive && renderer.domElement) {
         renderer.domElement.removeEventListener('pointermove', handlePointerMove);
         renderer.domElement.removeEventListener('pointerleave', handlePointerLeave);
       }
@@ -445,11 +453,10 @@ export default function FloatingLines({
       geometry.dispose();
       material.dispose();
       renderer.dispose();
-      if (renderer.domElement.parentElement) {
+      if (renderer.domElement && renderer.domElement.parentElement) {
         renderer.domElement.parentElement.removeChild(renderer.domElement);
       }
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     linesGradient,
     enabledWaves,
@@ -470,7 +477,7 @@ export default function FloatingLines({
   return (
     <div
       ref={containerRef}
-      className="w-full h-screen relative overflow-hidden floating-lines-container"
+      className="w-full h-screen relative overflow-hidden"
       style={{
         mixBlendMode: mixBlendMode
       }}
