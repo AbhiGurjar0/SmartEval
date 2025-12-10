@@ -3,13 +3,29 @@ import upload from "../../config/multer.js";
 import AssignmentSol from "../../models/assignmentSol.js";
 import AssignmentBinary from "../../models/assignmentBinary.js";
 import { isLoggedIn } from "../../middlewares/isLoggedIn.js";
-import { createRequire } from "module";
 import subjects from "../../models/subjects.js";
 import { populate } from "dotenv";
 import Assignments from "../../models/assignment.js";
-const require = createRequire(import.meta.url);
-const pdfParse = require("pdf-parse").default;
+import { PDFExtract } from "pdf.js-extract";
+const pdfExtract = new PDFExtract();
+import { checkAgainstAllAssignments } from "../../Engine/plagiarismEngine.js";
+import plagModel from "../../models/plag.js";
 const router = express.Router();
+async function extractPDF(buffer) {
+  return new Promise((resolve, reject) => {
+    const pdfParser = new PDFParser();
+
+    pdfParser.on("pdfParser_dataReady", (data) => {
+      resolve(data);
+    });
+
+    pdfParser.on("pdfParser_dataError", (err) => {
+      reject(err);
+    });
+
+    pdfParser.parseBuffer(buffer);
+  });
+}
 
 router.post(
   "/assignment/upload",
@@ -29,7 +45,7 @@ router.post(
       });
 
       if (submitted) {
-        await Assignments.findByIdAndUpdate(
+        let updated = await Assignments.findByIdAndUpdate(
           assignmentId,
           {
             $push: {
@@ -40,8 +56,55 @@ router.post(
             new: true,
           }
         );
+        if (updated) {
+          const data = await pdfExtract.extractBuffer(req.file.buffer);
+          const text = data.pages
+            .map((page) => page.content.map((item) => item.str).join(" "))
+            .join("\n\n");
 
-        return res.json({ success: true, message: "PDF submitted" });
+          if (text) {
+            let oldAssignments = await AssignmentBinary.find({
+              assignmentId,
+              assignmentId,
+            });
+            const result = await checkAgainstAllAssignments(
+              text,
+              oldAssignments
+            );
+            if (result) {
+              console.log(result);
+              let plgModel = await plagModel.create({
+                againstStudentName: result?.mostSuspicious?.againstStudentName,
+                plagScore: result?.plagiarismScore,
+                isPlagirized: result?.isPlagiarized,
+                reasons: result?.mostSuspicious?.reasons,
+              });
+              if (plgModel) {
+                await AssignmentSol.findByIdAndUpdate(
+                  submitted._id,
+                  {
+                    $set: { plagId: plgModel._id },
+                  },
+                  {
+                    new: true,
+                  }
+                );
+              }
+              console.log("plagiarism Successfully created");
+            }
+            let Binary = await AssignmentBinary.create({
+              studentId: req.user.id,
+              assignmentId,
+              rawText: text,
+            });
+
+            if (Binary) {
+              console.log("Binary created Successfully");
+            }
+          }
+
+          return res.json({ success: true, message: "PDF submitted" });
+        }
       } else {
         return res.json({
           success: false,
@@ -58,21 +121,6 @@ router.post(
     }
   }
 );
-//some IMportan
-//  console.log(req.file)
-//         const rawText = (await pdfParse(req.file.buffer)).text;
-
-//         const assignment = await AssignmentBinary.create({
-//           studentId: req.user.id,
-//           fileName: req.file.originalname,
-//           rawText,
-//         });
-//         if (assignment) {
-//           return res.json({
-//             success: true,
-//             message: "PDF submitted And Uploaded",
-//           });
-//         }
 
 //assigenment Rendering
 
@@ -101,7 +149,7 @@ router.get("/allSubjects", isLoggedIn, async (req, res) => {
   res.json({ success: true, subjects: allSubject });
 });
 
-//plag Checker
+//plag Ch
 
 router.post("/check-plagiarism", isLoggedIn, async (req, res) => {
   try {

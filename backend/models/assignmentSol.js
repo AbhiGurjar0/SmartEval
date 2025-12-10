@@ -13,10 +13,15 @@ const assignmentSolSchema = new mongoose.Schema({
     ref: "Assignment",
     required: true,
   },
+  plagId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Plag",
+    required: true,
+  },
   status: {
     type: String,
     enum: ["Pending", "Submitted"],
-    default:"Pending",
+    default: "Pending",
   },
   file: {
     data: Buffer,
@@ -25,8 +30,6 @@ const assignmentSolSchema = new mongoose.Schema({
   },
   marks: Number,
   feedback: String,
-  
- 
 });
 
 export default mongoose.models.AssignmentSol ||

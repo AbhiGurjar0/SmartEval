@@ -1,347 +1,193 @@
-// plagiarismEngine.js
+/**
+ * PLAGIARISM DETECTION ENGINE
+ * Structure:
+ * 1. Preprocessing (Clean & Prepare)
+ * 2. Comparison (Calculate Similarity Metrics)
+ * 3. Verdict (Score & Decide)
+ */
 
-const SimHash = require("simhash");
-const simhash = new SimHash();
-const OpenAI = require("openai");
+// ==========================================
+// STEP 1: PREPROCESSING (Clean & Prepare)
+// ==========================================
 
-// ⚠️ Set your OpenAI key in .env
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
+function preprocess(text) {
+  // Fix: Handle null/undefined inputs to prevent TypeError
+  const safeText = (text || "").toString();
 
-// 0. PREPROCESSING HELPERS
-
-function cleanText(text = "") {
-  return text
+  const clean = safeText
     .toLowerCase()
-    .replace(/[^a-z0-9\s]/g, " ")
-    .replace(/\s+/g, " ")
+    .replace(/[^a-z0-9\s]/g, " ") // Remove special chars
+    .replace(/\s+/g, " ")         // Collapse whitespace
     .trim();
+    
+  const tokens = clean.split(" ").filter(Boolean);
+  
+  return {
+    text: clean,
+    tokens: tokens,
+    wordSet: new Set(tokens)
+  };
 }
 
-function splitSentences(text = "") {
-  return text
-    .split(/[\.\?\!\n\r]/g)
-    .map((s) => s.trim())
-    .filter((s) => s.length > 0);
-}
-
-function tokenize(text = "") {
-  return cleanText(text).split(" ").filter(Boolean);
-}
-
-function getNgrams(words, n = 5) {
-  const grams = [];
-  for (let i = 0; i <= words.length - n; i++) {
-    grams.push(words.slice(i, i + n).join(" "));
+function getNgrams(tokens, n = 5) {
+  const grams = new Set();
+  for (let i = 0; i <= tokens.length - n; i++) {
+    grams.add(tokens.slice(i, i + n).join(" "));
   }
   return grams;
 }
 
-function cosineSimilarity(vecA, vecB) {
-  let dot = 0,
-    magA = 0,
-    magB = 0;
+// Helper for TF-IDF Vectorization
+function getVector(tokens, vocab, idf) {
+  const tf = {};
+  tokens.forEach(w => tf[w] = (tf[w] || 0) + 1);
+  const maxFreq = Math.max(...Object.values(tf)) || 1;
+  
+  return vocab.map(w => {
+    const tfVal = (tf[w] || 0) / maxFreq;
+    return tfVal * (idf[w] || 0);
+  });
+}
 
-  const len = Math.min(vecA.length, vecB.length);
-  for (let i = 0; i < len; i++) {
+function cosineSimilarity(vecA, vecB) {
+  let dot = 0, magA = 0, magB = 0;
+  for (let i = 0; i < vecA.length; i++) {
     dot += vecA[i] * vecB[i];
     magA += vecA[i] * vecA[i];
     magB += vecB[i] * vecB[i];
   }
-
-  if (!magA || !magB) return 0;
-  return dot / (Math.sqrt(magA) * Math.sqrt(magB));
+  return (magA && magB) ? dot / (Math.sqrt(magA) * Math.sqrt(magB)) : 0;
 }
 
-// 1. LAYER 1 – EXACT PHRASE (N-GRAM) OVERLAP
+// ==========================================
+// STEP 2: COMPARISON (Calculate Metrics)
+// ==========================================
 
-function ngramOverlapScore(textA, textB, n = 5) {
-  const aWords = tokenize(textA);
-  const bWords = tokenize(textB);
+function calculateMetrics(docA, docB) {
+  // A. N-Gram Overlap (Exact Phrase Matching)
+  const n = 5;
+  if (docA.tokens.length < n || docB.tokens.length < n) return { ngram: 0, tfidf: 0, jaccard: 0 };
+  
+  const setA = getNgrams(docA.tokens, n);
+  const setB = getNgrams(docB.tokens, n);
+  let intersection = 0;
+  setA.forEach(g => { if (setB.has(g)) intersection++; });
+  const ngramSim = intersection / Math.min(setA.size, setB.size);
 
-  if (aWords.length < n || bWords.length < n) return 0;
+  // B. Jaccard Similarity (Word Overlap)
+  const union = new Set([...docA.wordSet, ...docB.wordSet]);
+  const intersectWords = [...docA.wordSet].filter(x => docB.wordSet.has(x));
+  const jaccardSim = union.size ? intersectWords.length / union.size : 0;
 
-  const aNgrams = new Set(getNgrams(aWords, n));
-  const bNgrams = new Set(getNgrams(bWords, n));
-
-  let common = 0;
-  for (const g of aNgrams) {
-    if (bNgrams.has(g)) common++;
-  }
-
-  const minSize = Math.min(aNgrams.size, bNgrams.size);
-  if (minSize === 0) return 0;
-
-  return common / minSize; // 0–1
-}
-
-// 2. LAYER 2 – SIMHASH (NEAR-DUPLICATE DETECTION)
-
-function simhashLayer(textA, textB) {
-  const cA = cleanText(textA);
-  const cB = cleanText(textB);
-
-  const hashA = simhash.hash(cA);
-  const hashB = simhash.hash(cB);
-
-  const distance = simhash.hamming(hashA, hashB); // 0 = same
-  const maxBits = 64; // usually 64-bit
-  const similarity = 1 - distance / maxBits; // 0–1
-
-  return { distance, similarity };
-}
-
-// 3. LAYER 3 – LEXICAL SENTENCE SIMILARITY (WORD-BASED)
-
-function bagOfWordsVector(sentence, vocab) {
-  const words = tokenize(sentence);
-  const freq = {};
-  words.forEach((w) => {
-    freq[w] = (freq[w] || 0) + 1;
+  // C. TF-IDF Similarity (Structural/Content)
+  // Build mini-corpus vocabulary
+  const vocab = Array.from(union);
+  const docCount = 2;
+  const idf = {};
+  
+  vocab.forEach(word => {
+    let count = 0;
+    if (docA.wordSet.has(word)) count++;
+    if (docB.wordSet.has(word)) count++;
+    idf[word] = Math.log(docCount / (count + 1)); // Simple IDF
   });
 
-  return vocab.map((w) => freq[w] || 0);
+  const vecA = getVector(docA.tokens, vocab, idf);
+  const vecB = getVector(docB.tokens, vocab, idf);
+  const tfidfSim = cosineSimilarity(vecA, vecB);
+
+  return {
+    ngram: ngramSim,
+    jaccard: jaccardSim,
+    tfidf: tfidfSim
+  };
 }
 
-function lexicalSentenceLayer(sentencesA, sentencesB) {
-  if (!sentencesA.length || !sentencesB.length) {
-    return { highlySimilarCount: 0, ratio: 0 };
-  }
+// ==========================================
+// STEP 3: VERDICT (Score & Decide)
+// ==========================================
 
-  // Build vocab from both docs
-  const vocabSet = new Set();
-  sentencesA.concat(sentencesB).forEach((s) => {
-    tokenize(s).forEach((w) => vocabSet.add(w));
-  });
-  const vocab = Array.from(vocabSet);
-
-  let highlySimilarCount = 0;
-  const threshold = 0.85; // high lexical match
-
-  for (const sA of sentencesA) {
-    const vecA = bagOfWordsVector(sA, vocab);
-    let best = 0;
-
-    for (const sB of sentencesB) {
-      const vecB = bagOfWordsVector(sB, vocab);
-      const sim = cosineSimilarity(vecA, vecB);
-      if (sim > best) best = sim;
-    }
-
-    if (best >= threshold) {
-      highlySimilarCount++;
-    }
-  }
-
-  const ratio = highlySimilarCount / sentencesA.length;
-  return { highlySimilarCount, ratio }; // ratio 0–1
-}
-
-// 4. LAYER 4 – SEMANTIC SENTENCE SIMILARITY (EMBEDDINGS)
-
-async function embedTexts(texts) {
-  if (!texts.length) return [];
-
-  const response = await openai.embeddings.create({
-    model: "text-embedding-3-small",
-    input: texts.map((t) => cleanText(t)),
-  });
-
-  return response.data.map((d) => d.embedding);
-}
-
-async function semanticSentenceLayer(sentencesA, sentencesB) {
-  if (!sentencesA.length || !sentencesB.length) {
-    return { veryHighSemanticMatches: 0, ratio: 0 };
-  }
-
-  const [embA, embB] = await Promise.all([
-    embedTexts(sentencesA),
-    embedTexts(sentencesB),
-  ]);
-
-  const threshold = 0.92; // very high semantic similarity
-  let veryHighSemanticMatches = 0;
-
-  for (let i = 0; i < sentencesA.length; i++) {
-    const eA = embA[i];
-    let best = 0;
-
-    for (let j = 0; j < sentencesB.length; j++) {
-      const eB = embB[j];
-      const sim = cosineSimilarity(eA, eB);
-      if (sim > best) best = sim;
-    }
-
-    if (best >= threshold) {
-      veryHighSemanticMatches++;
-    }
-  }
-
-  const ratio = veryHighSemanticMatches / sentencesA.length;
-  return { veryHighSemanticMatches, ratio };
-}
-
-// 5. OPTIONAL LAYER – DOC-LEVEL EMBEDDINGS
-
-async function documentEmbeddingLayer(textA, textB) {
-  const [embA, embB] = await embedTexts([textA, textB]);
-  const sim = cosineSimilarity(embA, embB);
-  return sim; // 0–1, but we'll use this only as supportive signal
-}
-
-// 6. FINAL DECISION LOGIC
-
-function decidePlagiarism({
-  ngramScore,
-  simhashSim,
-  lexicalRatio,
-  semanticRatio,
-  docSim,
-}) {
-  // Defaults: everything safe
-  let isPlagiarized = false;
+function getVerdict(metrics) {
+  const { ngram, jaccard, tfidf } = metrics;
   const reasons = [];
+  let score = 0;
 
-  // Rule 1: Exact phrase / structure copy
-  if (ngramScore >= 0.3 && simhashSim >= 0.85) {
-    isPlagiarized = true;
-    reasons.push("High exact phrase overlap & near-duplicate structure");
+  // Weighted Scoring
+  // N-gram (40%): Direct copying
+  if (ngram > 0.3) {
+    score += ngram * 40;
+    reasons.push("Significant exact phrase overlap detected.");
+  }
+  // TF-IDF (40%): Structural similarity
+  if (tfidf > 0.75) {
+    score += tfidf * 40;
+    reasons.push("Document structure and key terms are highly similar.");
+  }
+  // Jaccard (20%): Vocabulary reuse
+  if (jaccard > 0.6) {
+    score += jaccard * 20;
+    reasons.push("High usage of identical vocabulary.");
   }
 
-  // Rule 2: Many sentences lexically same
-  if (lexicalRatio >= 0.4) {
-    isPlagiarized = true;
-    reasons.push("Many sentences have almost identical wording");
+  // Normalize score to 0-100
+  score = Math.min(100, Math.round(score));
+
+  // Threshold Logic
+  const isPlagiarized = score >= 50 || (ngram > 0.35 && tfidf > 0.8);
+
+  if (!isPlagiarized && score > 20) {
+    reasons.push("Moderate similarity found, likely same topic.");
+  } else if (reasons.length === 0) {
+    reasons.push("No significant plagiarism detected.");
   }
 
-  // Rule 3: Many sentences semantically almost identical
-  if (semanticRatio >= 0.4) {
-    isPlagiarized = true;
-    reasons.push(
-      "Many sentences are semantically almost identical (likely copy + slight rephrase)"
-    );
-  }
-
-  // Rule 4 (soft): Full document very close + other evidence
-  if (
-    !isPlagiarized &&
-    docSim >= 0.9 &&
-    (ngramScore >= 0.2 || lexicalRatio >= 0.3)
-  ) {
-    isPlagiarized = true;
-    reasons.push(
-      "Documents are almost identical overall with notable phrase or wording overlap"
-    );
-  }
-
-  // IMPORTANT:
-  // If only doc-level similarity high but ngram + sentence ratios low → treat as SAFE
-  // (same concept / topic, but independently written)
-
-  if (!isPlagiarized && docSim >= 0.9) {
-    reasons.push(
-      "High overall similarity, but low sentence-level and phrase matching → likely same concept, not plagiarism"
-    );
-  }
-
-  return { isPlagiarized, reasons };
+  return { isPlagiarized, score, reasons };
 }
 
-// 7. MAIN PIPELINE FUNCTION
+// ==========================================
+// PUBLIC EXPORTS
+// ==========================================
 
-// Compare ONE new assignment against ONE old assignment
-async function compareAssignments(newTextRaw, oldTextRaw) {
-  const newText = cleanText(newTextRaw);
-  const oldText = cleanText(oldTextRaw);
+export function compareAssignments(newTextRaw, oldTextRaw) {
+  // 1. Preprocess
+  const docA = preprocess(newTextRaw);
+  const docB = preprocess(oldTextRaw);
 
-  const newSentences = splitSentences(newTextRaw);
-  const oldSentences = splitSentences(oldTextRaw);
+  // 2. Compare
+  const metrics = calculateMetrics(docA, docB);
 
-  // Layer 1
-  const ngramScore = ngramOverlapScore(newText, oldText);
+  // 3. Decide
+  const verdict = getVerdict(metrics);
 
-  // Layer 2
-  const { similarity: simhashSim, distance: simhashDist } = simhashLayer(
-    newText,
-    oldText
-  );
+  return {
+    ngramScore: parseFloat(metrics.ngram.toFixed(2)),
+    tfidfSimilarity: parseFloat(metrics.tfidf.toFixed(2)),
+    jaccardSimilarity: parseFloat(metrics.jaccard.toFixed(2)),
+    isPlagiarized: verdict.isPlagiarized,
+    plagiarismScore: verdict.score,
+    reasons: verdict.reasons
+  };
+}
 
-  // Layer 3
-  const { ratio: lexicalRatio, highlySimilarCount } = lexicalSentenceLayer(
-    newSentences,
-    oldSentences
-  );
-
-  // Layer 4
-  const { ratio: semanticRatio, veryHighSemanticMatches } =
-    await semanticSentenceLayer(newSentences, oldSentences);
-
-  // Optional Layer 5
-  const docSim = await documentEmbeddingLayer(newText, oldText);
-
-  const decision = decidePlagiarism({
-    ngramScore,
-    simhashSim,
-    lexicalRatio,
-    semanticRatio,
-    docSim,
+export function checkAgainstAllAssignments(newTextRaw, oldAssignments = []) {
+  const results = oldAssignments.map(old => {
+    // Ensure we are passing a valid string, even if old.text is undefined
+    const result = compareAssignments(newTextRaw, old.rawText);
+    return {
+      againstId: old.id,
+      againstStudentName: old.studentName,
+      ...result
+    };
   });
 
-  return {
-    ngramScore,
-    simhashSimilarity: simhashSim,
-    simhashDistance: simhashDist,
-    lexicalHighlySimilarSentences: highlySimilarCount,
-    lexicalRatio,
-    semanticVeryHighMatches: veryHighSemanticMatches,
-    semanticRatio,
-    documentSimilarity: docSim,
-    ...decision,
-  };
-}
-
-// 8. COMPARE NEW ASSIGNMENT WITH MANY OLD ASSIGNMENTS
-
-/**
- * oldAssignments = [
- *   { id: "a1", studentId: "S1", text: "..." },
- *   { id: "a2", studentId: "S2", text: "..." },
- *   ...
- * ]
- */
-async function checkAgainstAllAssignments(newTextRaw, oldAssignments = []) {
-  const results = [];
-
-  for (const old of oldAssignments) {
-    const comparison = await compareAssignments(newTextRaw, old.text);
-    results.push({
-      againstId: old.id,
-      againstStudentId: old.studentId,
-      ...comparison,
-    });
-  }
-
-  // Find max suspicious result
-  let mostSuspicious = null;
-  for (const r of results) {
-    if (!mostSuspicious) {
-      mostSuspicious = r;
-      continue;
-    }
-    if (r.documentSimilarity > mostSuspicious.documentSimilarity) {
-      mostSuspicious = r;
-    }
-  }
+  // Sort by highest score first
+  results.sort((a, b) => b.plagiarismScore - a.plagiarismScore);
+  const mostSuspicious = results[0] || null;
 
   return {
+    isPlagiarized: mostSuspicious ? mostSuspicious.isPlagiarized : false,
+    plagiarismScore: mostSuspicious ? mostSuspicious.plagiarismScore : 0,
     mostSuspicious,
-    allResults: results,
+    allResults: results
   };
 }
-
-module.exports = {
-  compareAssignments,
-  checkAgainstAllAssignments,
-};
