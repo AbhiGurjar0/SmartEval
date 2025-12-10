@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 
 const connectDB = () => {
   mongoose
-    .connect("mongodb://localhost:27017/Smart-Eval")
+    .connect(process.env.MONGO_URI)
     .then(() => {
       console.log("Connected");
     })
