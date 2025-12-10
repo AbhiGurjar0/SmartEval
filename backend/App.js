@@ -21,13 +21,15 @@ env.config();
 conectDB();
 const app = express();
 app.use(bodyParser.json({ limit: "5mb" }));
+// import { main } from "./services/gemini.js";
+// await main();
 
 //middlwares
 app.use(
   cors({
     origin: ["http://localhost:5173", "http://localhost:5171"],
     credentials: true,
-    methods: ["GET", "POST","PATCH","PUT"], // optional but recommended
+    methods: ["GET", "POST", "PATCH", "PUT"], // optional but recommended
     allowedHeaders: ["Content-Type"], // required for fetch
   })
 );

@@ -16,7 +16,6 @@ const assignmentSolSchema = new mongoose.Schema({
   plagId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Plag",
-    required: true,
   },
   status: {
     type: String,

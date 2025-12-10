@@ -45,6 +45,7 @@ router.get("/allDetails", async (req, res) => {
 
 router.post("/allocation", async (req, res) => {
   let { teacherId, subjectId } = req.body;
+  console.log(teacherId, subjectId);
   let subject = await Subjects.findById(subjectId).populate("allotedTeacher");
   if (subject.allotedTeacher) {
     return res.json({
@@ -56,6 +57,7 @@ router.post("/allocation", async (req, res) => {
     return res.json({ success: false, message: "Subject does Not Exist" });
   }
   let teacher = await Teachers.findById(teacherId);
+  console.log("teacher is", teacher);
 
   if (!teacher) {
     return res.json({ success: false, message: "Teacher does Not Exist" });
@@ -67,15 +69,15 @@ router.post("/allocation", async (req, res) => {
     },
     { new: true }
   );
-  await Teachers.findByIdAndUpdate(
+
+  let updatedTeacher = await Teachers.findByIdAndUpdate(
     teacherId,
     {
-      $push: {
-        subjectAlloted: subjectId,
-      },
+      $addToSet: { subjectsAlloted: subjectId }, // prevents duplicates
     },
     { new: true }
   );
+  console.log(updatedTeacher);
 
   return res.json({
     success: true,

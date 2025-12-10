@@ -161,14 +161,7 @@ const DetailsModal = ({
         ? "High similarity detected"
         : "Original content",
     confidence: (student.plagiarismPercent || 0) > 10 ? "Low" : "High",
-    deductions:
-      (student.plagiarismPercent || 0) > 10
-        ? [
-            "Potential plagiarism (-20 marks)",
-            "Lack of original analysis",
-            "Citation issues",
-          ]
-        : ["Minor grammatical issues", "Formatting suggestions"],
+    deductions: [student.feedback],
   };
 
   const isAlreadyCompleted = student.status === "Completed";

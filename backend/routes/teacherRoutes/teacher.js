@@ -7,6 +7,7 @@ import { isLoggedIn } from "../../middlewares/isLoggedIn.js";
 import Assignments from "../../models/assignment.js";
 import subjects from "../../models/subjects.js";
 import AssignmentSol from "../../models/assignmentSol.js";
+import { populate } from "dotenv";
 
 router.post("/addAssignment", isLoggedIn, async (req, res) => {
   try {
@@ -78,9 +79,13 @@ router.get("/allDetails", isLoggedIn, async (req, res) => {
         path: "submissions",
         model: "AssignmentSol",
         populate: {
-          path: "studentId", // Populate student info inside submissions
+          path: "studentId",
           model: "Student",
         },
+        populate:{
+          path:"plagId",
+          model:"Plag"
+        }
       },
     });
     // let allStudents = await Students.find({});

@@ -44,6 +44,7 @@ const TeacherAssignmentDetails = () => {
       const foundAssignment = subjects.assignments.find(
         (assign) => assign._id === id
       );
+      console.log(foundAssignment);
       setAssignment(foundAssignment || null);
     }
   }, [subjects, id]);
@@ -56,7 +57,7 @@ const TeacherAssignmentDetails = () => {
     // Map actual API data to component state
     setSubmissions(
       (assignment.submissions || []).map((sub, index) => ({
-        id: sub.studentId._id,
+        id: sub.studentId,
         name: sub.studentId?.name || `Student ${index + 1}`,
         email: sub.studentId?.email || "N/A",
         studentId: sub.studentId?.enrollmentNumber || "N/A",
@@ -70,10 +71,11 @@ const TeacherAssignmentDetails = () => {
         pdfName: sub.file?.fileName || "submission.pdf",
         score: sub.marks || null,
         maxScore: assignment.marks,
-        plagiarismPercent: sub.plagiarismScore || 0,
-        aiProbability: sub.aiScore || 0,
+        plagiarismPercent: sub?.plagId?.plagScore || 0,
+        isPlag: sub?.plagId?.isPlagirized || false,
+        aiProbability: sub?.plagId?.plagScore || 0,
         wordCount: sub.wordCount || 0,
-        feedback: sub.feedback || "",
+        feedback: sub?.plagId?.reasons || [],
         solutionId: sub._id,
       }))
     );
