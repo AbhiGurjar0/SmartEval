@@ -135,6 +135,7 @@ const DetailsModal = ({
       score: finalScore,
       status: statusOverride,
       reviewMessage: teacherNotes,
+      createdAt: new Date(),
     };
     let res = await fetch("http://localhost:3000/teacher/addMarks", {
       method: "PATCH",
@@ -147,6 +148,11 @@ const DetailsModal = ({
     res = await res.json();
     if (res.success) {
       if (onSubmitFeedback) onSubmitFeedback(student.id, finalReport);
+    
+      student.score = finalScore;
+      student.status = "Completed";
+      student.submissionDate = finalReport.createdAt.toLocaleDateString();
+      student.submissionTime = finalReport.createdAt.toLocaleTimeString();
       setIsEditing(false);
       alert(res.message);
       return;
@@ -415,7 +421,7 @@ const DetailsModal = ({
                       </label>
                       <div className="relative">
                         <input
-                          type="number"
+                          type="text"
                           max={student.maxScore}
                           value={finalScore}
                           onChange={(e) => setFinalScore(e.target.value)}

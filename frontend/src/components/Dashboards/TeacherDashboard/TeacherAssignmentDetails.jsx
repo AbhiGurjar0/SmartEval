@@ -63,11 +63,11 @@ const TeacherAssignmentDetails = () => {
         studentId: sub.studentId?.enrollmentNumber || "N/A",
         status: sub.status || "In Review",
         submissionDate: new Date(
-          sub.createdAt || Date.now()
-        ).toLocaleDateString(),
+          sub.createdAt 
+        ).toLocaleDateString()||null,
         submissionTime: new Date(
-          sub.createdAt || Date.now()
-        ).toLocaleTimeString(),
+          sub.createdAt 
+        ).toLocaleTimeString()||null,
         pdfName: sub.file?.fileName || "submission.pdf",
         score: sub.marks || null,
         maxScore: assignment.marks,

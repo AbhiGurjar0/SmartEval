@@ -71,27 +71,32 @@ router.get("/allDetails", isLoggedIn, async (req, res) => {
     if (!teacher) {
       return res.json({ success: false, message: "Authorization problem" });
     }
-    let subjectId = teacher.subjectsAlloted;
     // More common structure:
-    let subject = await Subjects.findById(subjectId).populate({
+    let subjects = await Subjects.find({
+      _id: { $in: teacher?.subjectsAlloted }, // Correct $in syntax
+    }).populate({
       path: "assignments",
-      populate: {
-        path: "submissions",
-        model: "AssignmentSol",
-        populate: {
-          path: "studentId",
-          model: "Student",
+      populate: [
+        {
+          path: "submissions",
+          model: "AssignmentSol",
+          populate: [
+            {
+              path: "studentId",
+              model: "Student",
+            },
+            {
+              path: "plagId",
+              model: "Plag",
+            },
+          ],
         },
-        populate:{
-          path:"plagId",
-          model:"Plag"
-        }
-      },
+      ],
     });
     // let allStudents = await Students.find({});
     return res.json({
       success: true,
-      subjects: subject,
+      subjects: subjects,
       //   Students: allStudents,
     });
   } catch (err) {
@@ -100,9 +105,9 @@ router.get("/allDetails", isLoggedIn, async (req, res) => {
   }
 });
 
-router.patch("/addMarks", async (req, res) => {
+router.patch("/addMarks", isLoggedIn, async (req, res) => {
   try {
-    let { solutionId, score, reviewMessage } = req.body;
+    let { solutionId, score, reviewMessage, createdAt } = req.body;
 
     let evaluted = await AssignmentSol.findByIdAndUpdate(
       solutionId,
@@ -110,12 +115,46 @@ router.patch("/addMarks", async (req, res) => {
         marks: score,
         status: "Completed",
         feedback: reviewMessage,
+        createdAt: createdAt,
       },
       {
         new: true,
       }
     );
     return res.json({ success: true, message: "Marks Added Successfully" });
+  } catch (err) {
+    console.log(err);
+    return res.json({ success: false, message: "error in evaluation" });
+  }
+});
+
+router.post("/InviteStudent", isLoggedIn, async (req, res) => {
+  try {
+    let { enrollments, subjectId } = req.body;
+    let wrongs = [];
+    for (let i = 0; i < enrollments.length; i++) {
+      let studentId = enrollments[i];
+      let student = await Students.findById(studentId);
+      if (!student) {
+        wrongs.push(studentId);
+      }
+      await Students.findByIdAndUpdate(
+        studentId,
+        {
+          $push: {
+            notification: subjectId,
+          },
+        },
+        {
+          new: true,
+        }
+      );
+    }
+    return res.json({
+      success: true,
+      message: "Marks Added Successfully",
+      wrongs: wrongs,
+    });
   } catch (err) {
     console.log(err);
     return res.json({ success: false, message: "error in evaluation" });

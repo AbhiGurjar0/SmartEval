@@ -28,6 +28,10 @@ const assignmentSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
+  remaning: {
+    type: Number,
+    default: 0,
+  },
 });
 
 export default mongoose.models.Assignment ||

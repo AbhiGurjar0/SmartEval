@@ -1,9 +1,11 @@
 import { createContext, useContext, useState, useEffect } from "react";
+import { useAuth } from "./AuthContext";
 
 const TeacherContext = createContext();
 export const TeacherProvider = ({ children }) => {
-  const [subjects, setSubjects] = useState([]);
-  const [students, setStudents] = useState([]);
+  const [subjects, setSubjects] = useState(null);
+  const [students, setStudents] = useState(null);
+  const { user } = useAuth();
 
   const allDetails = async () => {
     try {
@@ -14,9 +16,13 @@ export const TeacherProvider = ({ children }) => {
       console.log("Teacher Context ", data);
       if (data.subjects) {
         setSubjects(data.subjects);
+      } else {
+        setSubjects(null);
       }
       if (data.Students) {
         setStudents(data.Students);
+      } else {
+        setStudents(null);
       }
     } catch (err) {
       setSubjects(null);
@@ -25,11 +31,22 @@ export const TeacherProvider = ({ children }) => {
   };
 
   useEffect(() => {
-    allDetails();
-  }, []);
-
+    if (user) {
+      // Clear previous data first
+      setSubjects(null);
+      setStudents(null);
+      // Then fetch new teacher's data
+      allDetails();
+    } else {
+      //   // Clear data when logged out
+      setSubjects(null);
+      setStudents(null);
+    }
+  }, [user]);
   return (
-    <TeacherContext.Provider value={{ subjects, students }}>
+    <TeacherContext.Provider
+      value={{ subjects, students, refetchTeacherData: allDetails }}
+    >
       {children}
     </TeacherContext.Provider>
   );

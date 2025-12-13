@@ -23,14 +23,15 @@ import StudentAssignmentUpload from "./components/Dashboards/StudentDashboard/St
 
 // --- Teacher Dashboard Components ---
 import TeacherDashboard from "./components/Dashboards/TeacherDashboard/TeacherDashboard";
+import TeacherSubjectDashboard from "./components/Dashboards/TeacherDashboard/TeacherSubjectDetails";
 import TeacherAssignmentDetails from "./components/Dashboards/TeacherDashboard/TeacherAssignmentDetails";
 
 function App() {
   return (
     <>
       <AdminProvider>
-        <TeacherProvider>
-          <AuthProvider>
+        <AuthProvider>
+          <TeacherProvider>
             <ToastProvider>
               <UserProvider>
                 <BrowserRouter>
@@ -59,6 +60,10 @@ function App() {
                       element={<TeacherDashboard />}
                     />
                     <Route
+                      path="/teacher/subject/:subjectId"
+                      element={<TeacherSubjectDashboard />}
+                    />
+                    <Route
                       path="/teacher/assignment/:id"
                       element={<TeacherAssignmentDetails />}
                     />
@@ -71,8 +76,8 @@ function App() {
                 </BrowserRouter>
               </UserProvider>
             </ToastProvider>
-          </AuthProvider>
-        </TeacherProvider>
+          </TeacherProvider>
+        </AuthProvider>
       </AdminProvider>
     </>
   );

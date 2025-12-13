@@ -1,1 +1,1 @@
-export {default} from './TeacherDashboard'
+export { default } from "./TeacherDashboard";

@@ -29,6 +29,7 @@ const assignmentSolSchema = new mongoose.Schema({
   },
   marks: Number,
   feedback: String,
+  createdAt: Date,
 });
 
 export default mongoose.models.AssignmentSol ||
