@@ -135,26 +135,7 @@ const FooterCTASection = () => {
               educators evaluate student work
             </motion.p>
 
-            {/* CTA Buttons */}
-            <motion.div
-              className="flex flex-col sm:flex-row gap-4 justify-center mb-16"
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.8, delay: 0.3 }}
-            >
-              <button className="group relative px-8 py-4 rounded-full bg-gradient-to-r from-purple-600 to-blue-600 text-white font-medium hover:shadow-2xl hover:shadow-purple-500/30 transition-all duration-300 hover:scale-105">
-                <span className="flex items-center gap-3">
-                  Start Evaluating Smarter
-                  <ArrowRight className="w-5 h-5 transition-transform group-hover:translate-x-1" />
-                </span>
-                <div className="absolute inset-0 rounded-full bg-gradient-to-r from-purple-600 to-blue-600 blur-md opacity-0 group-hover:opacity-50 transition-opacity duration-300"></div>
-              </button>
-              <button className="px-8 py-4 rounded-full bg-white/10 backdrop-blur-sm text-white font-medium border border-white/20 hover:bg-white/20 transition-all duration-300">
-                Book a Demo
-              </button>
-            </motion.div>
-
+           
             {/* Stats */}
             <motion.div
               className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-2xl mx-auto"

@@ -74,7 +74,7 @@ const AdminDashboard = () => {
     teacherId: "",
     subjectId: "",
   });
-  const [activeTab, setActiveTab] = useState("overview");
+  const [activeTab, setActiveTab] = useState("users");
   const [searchTerm, setSearchTerm] = useState("");
   const [showProfileMenu, setShowProfileMenu] = useState(false);
   const [showAddUserModal, setShowAddUserModal] = useState(false);
@@ -205,8 +205,8 @@ const AdminDashboard = () => {
       users.map((user) =>
         user.id === id
           ? { ...user, status: user.status === "Active" ? "Blocked" : "Active" }
-          : user
-      )
+          : user,
+      ),
     );
   };
 
@@ -265,10 +265,10 @@ const AdminDashboard = () => {
     }
 
     const teacher = teacherData.find(
-      (t) => String(t._id) === String(newAllocation.teacherId)
+      (t) => String(t._id) === String(newAllocation.teacherId),
     );
     const subject = subjectsData.find(
-      (s) => String(s._id) === String(newAllocation.subjectId)
+      (s) => String(s._id) === String(newAllocation.subjectId),
     );
 
     if (teacher && subject) {
@@ -514,11 +514,6 @@ const AdminDashboard = () => {
           <div className="flex flex-wrap gap-2 border-b border-white/10 pb-2">
             {[
               {
-                id: "overview",
-                label: "Overview",
-                icon: <BarChart3 className="w-4 h-4" />,
-              },
-              {
                 id: "users",
                 label: "Users",
                 icon: <Users className="w-4 h-4" />,
@@ -549,176 +544,6 @@ const AdminDashboard = () => {
             ))}
           </div>
         </div>
-
-        {/* Overview Tab Content */}
-        {activeTab === "overview" && (
-          <>
-            {/* System Stats Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-              <div className="bg-gradient-to-br from-gray-900/50 to-gray-900/30 backdrop-blur-sm rounded-2xl border border-white/10 p-6">
-                <div className="flex items-center justify-between mb-4">
-                  <Users className="w-8 h-8 text-blue-400" />
-                  <div className="px-3 py-1 rounded-full bg-blue-500/10 text-blue-400 text-sm">
-                    {stats.totalStudents}
-                  </div>
-                </div>
-                <h3 className="text-lg font-bold text-white mb-2">
-                  Total Students
-                </h3>
-                <p className="text-white/60 text-sm">Active student accounts</p>
-              </div>
-
-              <div className="bg-gradient-to-br from-gray-900/50 to-gray-900/30 backdrop-blur-sm rounded-2xl border border-white/10 p-6">
-                <div className="flex items-center justify-between mb-4">
-                  <User className="w-8 h-8 text-green-400" />
-                  <div className="px-3 py-1 rounded-full bg-green-500/10 text-green-400 text-sm">
-                    {stats.totalTeachers}
-                  </div>
-                </div>
-                <h3 className="text-lg font-bold text-white mb-2">
-                  Total Teachers
-                </h3>
-                <p className="text-white/60 text-sm">Faculty members</p>
-              </div>
-
-              <div className="bg-gradient-to-br from-gray-900/50 to-gray-900/30 backdrop-blur-sm rounded-2xl border border-white/10 p-6">
-                <div className="flex items-center justify-between mb-4">
-                  <Activity className="w-8 h-8 text-purple-400" />
-                  <div className="px-3 py-1 rounded-full bg-purple-500/10 text-purple-400 text-sm">
-                    {stats.activeUsers}
-                  </div>
-                </div>
-                <h3 className="text-lg font-bold text-white mb-2">
-                  Active Users
-                </h3>
-                <p className="text-white/60 text-sm">Currently online</p>
-              </div>
-
-              <div className="bg-gradient-to-br from-gray-900/50 to-gray-900/30 backdrop-blur-sm rounded-2xl border border-white/10 p-6">
-                <div className="flex items-center justify-between mb-4">
-                  <Server className="w-8 h-8 text-emerald-400" />
-                  <div
-                    className={`px-3 py-1 rounded-full text-sm ${
-                      stats.systemStatus === "Operational"
-                        ? "bg-emerald-500/10 text-emerald-400"
-                        : "bg-red-500/10 text-red-400"
-                    }`}
-                  >
-                    {stats.systemStatus}
-                  </div>
-                </div>
-                <h3 className="text-lg font-bold text-white mb-2">
-                  System Status
-                </h3>
-                <p className="text-white/60 text-sm">All systems operational</p>
-              </div>
-            </div>
-
-            {/* System Metrics */}
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-              <div className="lg:col-span-2 bg-gradient-to-br from-gray-900/50 to-gray-900/30 backdrop-blur-sm rounded-2xl border border-white/10 p-6">
-                <h3 className="text-xl font-bold text-white mb-6 flex items-center gap-2">
-                  <Activity className="w-5 h-5 text-blue-400" />
-                  System Metrics
-                </h3>
-                <div className="space-y-6">
-                  <div>
-                    <div className="flex justify-between text-sm mb-2">
-                      <span className="text-white/60">Storage Usage</span>
-                      <span className="text-white">{stats.storageUsed}</span>
-                    </div>
-                    <div className="h-2 rounded-full bg-white/10 overflow-hidden">
-                      <div
-                        className="h-full rounded-full bg-gradient-to-r from-blue-600 to-cyan-600"
-                        style={{ width: stats.storageUsed }}
-                      ></div>
-                    </div>
-                  </div>
-                  <div>
-                    <div className="flex justify-between text-sm mb-2">
-                      <span className="text-white/60">Response Time</span>
-                      <span className="text-white">
-                        {stats.avgResponseTime}
-                      </span>
-                    </div>
-                    <div className="h-2 rounded-full bg-white/10 overflow-hidden">
-                      <div
-                        className="h-full rounded-full bg-gradient-to-r from-green-600 to-emerald-600"
-                        style={{ width: "85%" }}
-                      ></div>
-                    </div>
-                  </div>
-                  <div>
-                    <div className="flex justify-between text-sm mb-2">
-                      <span className="text-white/60">API Uptime</span>
-                      <span className="text-white">99.9%</span>
-                    </div>
-                    <div className="h-2 rounded-full bg-white/10 overflow-hidden">
-                      <div
-                        className="h-full rounded-full bg-gradient-to-r from-purple-600 to-pink-600"
-                        style={{ width: "99.9%" }}
-                      ></div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Announcements Panel */}
-              <div className="bg-gradient-to-br from-gray-900/50 to-gray-900/30 backdrop-blur-sm rounded-2xl border border-white/10 p-6">
-                <h3 className="text-xl font-bold text-white mb-6 flex items-center gap-2">
-                  <Bell className="w-5 h-5 text-yellow-400" />
-                  Announcements
-                </h3>
-                <textarea
-                  value={announcementText}
-                  onChange={(e) => setAnnouncementText(e.target.value)}
-                  rows="3"
-                  className="w-full rounded-xl bg-white/5 border border-white/10 px-4 py-3 text-white placeholder-white/40 focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:border-transparent mb-4"
-                  placeholder="Enter announcement for all users..."
-                />
-                <button
-                  onClick={handleAnnouncement}
-                  className="w-full py-3 rounded-xl bg-gradient-to-r from-yellow-600 to-orange-600 text-white font-medium hover:shadow-2xl hover:shadow-yellow-500/30 transition-all duration-200"
-                >
-                  Post Announcement
-                </button>
-
-                <div className="mt-6">
-                  <h4 className="text-sm font-medium text-white/60 mb-3">
-                    Recent Announcements
-                  </h4>
-                  <div className="space-y-3 max-h-60 overflow-y-auto">
-                    {announcements.map((a) => (
-                      <div
-                        key={a.id}
-                        className="p-3 rounded-lg bg-white/5 border border-white/10"
-                      >
-                        <div className="flex justify-between items-start mb-1">
-                          <span className="text-xs text-white/40">
-                            {a.date}
-                          </span>
-                          <span
-                            className={`text-xs px-2 py-1 rounded-full ${
-                              a.type === "warning"
-                                ? "bg-yellow-500/10 text-yellow-400"
-                                : a.type === "success"
-                                ? "bg-green-500/10 text-green-400"
-                                : "bg-blue-500/10 text-blue-400"
-                            }`}
-                          >
-                            {a.type}
-                          </span>
-                        </div>
-                        <p className="text-sm text-white">{a.content}</p>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </div>
-          </>
-        )}
-
         {/* Users Tab Content */}
         {activeTab === "users" && (
           <div className="space-y-6">
@@ -987,7 +812,7 @@ const AdminDashboard = () => {
                   <tbody className="divide-y divide-white/10">
                     {subjectsData.map((subject) => {
                       const isAllocated = allocations.some(
-                        (a) => a.subjectId === subject.courseCode
+                        (a) => a.subjectId === subject.courseCode,
                       );
                       return (
                         <tr

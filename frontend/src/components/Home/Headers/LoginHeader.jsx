@@ -3,27 +3,35 @@ import { FaUserCircle } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
 import useScrollDirection from "../../../Hooks/useScrollDirection";
 import { AuthContext } from "../../../context/AuthContext";
-import { 
-  Home, 
-  LayoutDashboard, 
-  Sparkles, 
+import {
+  Home,
+  LayoutDashboard,
+  Sparkles,
   ChevronDown,
   LogOut,
   Settings,
-  User
+  User,
 } from "lucide-react";
+import axios from "axios";
 
 const LoginHeader = () => {
   const scrollDirection = useScrollDirection();
-  const { user, logout } = useContext(AuthContext); // Assuming you have logout function
+  const { user } = useContext(AuthContext); // Assuming you have logout function
   const navigate = useNavigate();
   const [showDropdown, setShowDropdown] = useState(false);
 
-  const scrollClass = scrollDirection === "down" ? "-translate-y-full" : "translate-y-0";
+  const scrollClass =
+    scrollDirection === "down" ? "-translate-y-full" : "translate-y-0";
 
   const handleLogout = () => {
     // Call your logout function
-    logout?.();
+    if (user.role === "Admin") {
+      axios.post("http://localhost:3000/admin/logout");
+    } else if (user.role === "teacher") {
+      axios.post("http://localhost:3000/teacher/logout");
+    } else if (user.role === "student") {
+      axios.post("http://localhost:3000/user/logout");
+    }
     navigate("/login");
     setShowDropdown(false);
   };
@@ -53,7 +61,9 @@ const LoginHeader = () => {
           <h1 className="text-xl font-bold bg-gradient-to-r from-white via-purple-100 to-blue-100 bg-clip-text text-transparent">
             SmartEval
           </h1>
-          <span className="text-xs text-white/60 -mt-1">AI-Powered Evaluation</span>
+          <span className="text-xs text-white/60 -mt-1">
+            AI-Powered Evaluation
+          </span>
         </div>
       </Link>
 
@@ -76,14 +86,6 @@ const LoginHeader = () => {
             <span className="text-sm font-medium">Dashboard</span>
           </Link>
         )}
-
-        {/* Add more nav items if needed */}
-        <Link
-          to="/features"
-          className="flex items-center gap-2 px-4 py-2 rounded-full text-white/80 hover:text-white hover:bg-white/10 transition-all duration-200 group ml-2"
-        >
-          <span className="text-sm font-medium">Features</span>
-        </Link>
       </nav>
 
       {/* User/Auth Section */}
@@ -103,7 +105,10 @@ const LoginHeader = () => {
                     className="relative w-8 h-8 rounded-full object-cover"
                   />
                 ) : (
-                  <FaUserCircle size={24} className="text-white/80 group-hover:text-white transition-colors duration-200" />
+                  <FaUserCircle
+                    size={24}
+                    className="text-white/80 group-hover:text-white transition-colors duration-200"
+                  />
                 )}
               </div>
               <div className="hidden sm:block text-left">
@@ -114,14 +119,16 @@ const LoginHeader = () => {
                   {user.role}
                 </span>
               </div>
-              <ChevronDown className={`w-4 h-4 text-white/60 transition-transform duration-200 ${showDropdown ? 'rotate-180' : ''}`} />
+              <ChevronDown
+                className={`w-4 h-4 text-white/60 transition-transform duration-200 ${showDropdown ? "rotate-180" : ""}`}
+              />
             </button>
 
             {/* Dropdown Menu */}
             {showDropdown && (
               <>
-                <div 
-                  className="fixed inset-0 z-40" 
+                <div
+                  className="fixed inset-0 z-40"
                   onClick={() => setShowDropdown(false)}
                 />
                 <div className="absolute right-0 top-full mt-2 w-64 rounded-xl border border-white/10 bg-black/90 backdrop-blur-xl shadow-2xl shadow-purple-500/10 z-50 overflow-hidden animate-fade-in">
@@ -131,12 +138,14 @@ const LoginHeader = () => {
                         <User className="w-5 h-5 text-white/80" />
                       </div>
                       <div>
-                        <p className="text-sm font-medium text-white">{user.name}</p>
+                        <p className="text-sm font-medium text-white">
+                          {user.name}
+                        </p>
                         <p className="text-xs text-white/60">{user.email}</p>
                       </div>
                     </div>
                   </div>
-                  
+
                   <div className="p-2">
                     <Link
                       to="/profile"
@@ -187,14 +196,6 @@ const LoginHeader = () => {
           </div>
         )}
       </div>
-
-      {/* Mobile Menu Button (Optional) */}
-      <button className="md:hidden p-2 rounded-lg bg-white/5 border border-white/10">
-        <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-        </svg>
-      </button>
-
       {/* Custom Animations */}
       <style jsx>{`
         @keyframes fade-in {
@@ -207,7 +208,7 @@ const LoginHeader = () => {
             transform: translateY(0);
           }
         }
-        
+
         .animate-fade-in {
           animation: fade-in 0.2s ease-out forwards;
         }

@@ -10,7 +10,7 @@ import env from "dotenv";
 import cookieParser from "cookie-parser";
 import { userLogin, userRegister } from "./controllers/userLogin.js";
 import { teacherLogin, teacherRegister } from "./controllers/teacherLogin.js";
-import { adminLogin, adminRegister } from "./controllers/adminLogin.js";
+import { adminLogin, adminRegister , adminLogout } from "./controllers/adminLogin.js";
 import studentRoutes from "./routes/userRoutes/student.js";
 import { isLoggedIn } from "./middlewares/isLoggedIn.js";
 import bodyParser from "body-parser";
@@ -54,6 +54,7 @@ app.post("/teacher/register", teacherRegister);
 //Admin login/register
 app.post("/admin/login", adminLogin);
 app.post("/admin/register", adminRegister);
+app.post("/admin/logout", adminLogout);
 
 app.get("/auth/check", isLoggedIn, async (req, res) => {
   if (!req.user) {

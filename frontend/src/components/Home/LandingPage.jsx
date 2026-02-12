@@ -34,65 +34,27 @@ function HeroSection() {
 
         {/* Subheading with animation */}
         <div className="mb-10 flex flex-wrap items-center justify-center gap-3 text-xl font-light text-white/90">
-          <span className="animate-fade-in-up animation-delay-100">Detect.</span>
+          <span className="animate-fade-in-up animation-delay-100">
+            Detect.
+          </span>
           <span className="h-1 w-1 rounded-full bg-white/40"></span>
-          <span className="animate-fade-in-up animation-delay-200">Verify.</span>
+          <span className="animate-fade-in-up animation-delay-200">
+            Verify.
+          </span>
           <span className="h-1 w-1 rounded-full bg-white/40"></span>
-          <span className="animate-fade-in-up animation-delay-300">Evaluate.</span>
+          <span className="animate-fade-in-up animation-delay-300">
+            Evaluate.
+          </span>
         </div>
 
         {/* Description */}
         <p className="mb-12 max-w-2xl text-lg text-white/80 sm:text-xl">
-          SmartEval combines advanced AI to check plagiarism, verify handwriting, 
-          and detect AI-generated content — revolutionizing assignment evaluation 
-          with precision and efficiency.
+          SmartEval combines advanced AI to check plagiarism, verify
+          handwriting, and detect AI-generated content — revolutionizing
+          assignment evaluation with precision and efficiency.
         </p>
 
-        {/* Buttons container */}
-        <div className="flex flex-col items-center justify-center gap-5 sm:flex-row">
-          {/* Primary button with enhanced hover effects */}
-          <button
-            className="group relative flex items-center justify-center overflow-hidden rounded-full px-8 py-4 text-lg font-medium text-white transition-all duration-300 hover:scale-[1.02] hover:shadow-2xl"
-            style={{
-              background: "linear-gradient(90deg, #8A15A3, #4D97FF)",
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.background = "linear-gradient(90deg, #9d2eb8, #5aa3ff)";
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.background = "linear-gradient(90deg, #8A15A3, #4D97FF)";
-            }}
-          >
-            <span className="relative z-10 flex items-center">
-              Get Started
-              <IoIosArrowRoundForward
-                size={28}
-                className="ml-3 transition-all duration-300 group-hover:translate-x-1 group-hover:scale-110"
-              />
-            </span>
-            {/* Ripple effect background */}
-            <div className="absolute inset-0 h-full w-full animate-ping-slow rounded-full bg-white/10"></div>
-          </button>
-
-          {/* Secondary button */}
-          <button
-            className="group relative overflow-hidden rounded-full px-8 py-4 text-lg font-medium text-white transition-all duration-300 hover:scale-[1.02] hover:shadow-xl"
-            style={{
-              backgroundColor: "rgba(57, 44, 78, 0.6)",
-              backdropFilter: "blur(10px)",
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.backgroundColor = "rgba(57, 44, 78, 0.8)";
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.backgroundColor = "rgba(57, 44, 78, 0.6)";
-            }}
-          >
-            <span className="relative z-10">Learn More</span>
-            <div className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent group-hover:animate-shine"></div>
-          </button>
-        </div>
-
+       
         {/* Stats or additional info */}
         <div className="mt-16 grid grid-cols-1 gap-8 sm:grid-cols-3">
           <div className="animate-fade-in-up animation-delay-300">

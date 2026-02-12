@@ -1,6 +1,17 @@
 import React, { useRef, useEffect, useState, useCallback } from "react";
 import { gsap } from "gsap";
-import { Download, Sparkles, Users, Clock, Shield, Zap, ArrowRight, Play, BarChart, CheckCircle } from "lucide-react";
+import {
+  Download,
+  Sparkles,
+  Users,
+  Clock,
+  Shield,
+  Zap,
+  ArrowRight,
+  Play,
+  BarChart,
+  CheckCircle,
+} from "lucide-react";
 
 // --- PARTICLE CARD COMPONENT (The Animation Engine) ---
 // (Keeping your existing ParticleCard component as is, but adding enhanced features)
@@ -32,8 +43,8 @@ const ParticleCard = ({
       createParticleElement(
         Math.random() * width,
         Math.random() * height,
-        glowColor
-      )
+        glowColor,
+      ),
     );
     particlesInitialized.current = true;
   }, [particleCount, glowColor]);
@@ -75,7 +86,7 @@ const ParticleCard = ({
         gsap.fromTo(
           clone,
           { scale: 0, opacity: 0 },
-          { scale: 1, opacity: 1, duration: 0.3, ease: "back.out(1.7)" }
+          { scale: 1, opacity: 1, duration: 0.3, ease: "back.out(1.7)" },
         );
 
         gsap.to(clone, {
@@ -182,7 +193,7 @@ const ParticleCard = ({
         Math.hypot(x, y),
         Math.hypot(x - rect.width, y),
         Math.hypot(x, y - rect.height),
-        Math.hypot(x - rect.width, y - rect.height)
+        Math.hypot(x - rect.width, y - rect.height),
       );
 
       const ripple = document.createElement("div");
@@ -209,7 +220,7 @@ const ParticleCard = ({
           duration: 1,
           ease: "power2.out",
           onComplete: () => ripple.remove(),
-        }
+        },
       );
 
       // Add multiple smaller particles on click
@@ -226,9 +237,9 @@ const ParticleCard = ({
           pointer-events: none;
           z-index: 1000;
         `;
-        
+
         element.appendChild(clickParticle);
-        
+
         gsap.to(clickParticle, {
           x: (Math.random() - 0.5) * 100,
           y: (Math.random() - 0.5) * 100,
@@ -303,9 +314,21 @@ const ProfessionalBusiness = () => {
 
   const stats = [
     { value: "90%", label: "Time Saved", icon: <Clock className="w-4 h-4" /> },
-    { value: "99.8%", label: "Accuracy", icon: <CheckCircle className="w-4 h-4" /> },
-    { value: "50K+", label: "Evaluations", icon: <BarChart className="w-4 h-4" /> },
-    { value: "24/7", label: "Availability", icon: <Shield className="w-4 h-4" /> },
+    {
+      value: "99.8%",
+      label: "Accuracy",
+      icon: <CheckCircle className="w-4 h-4" />,
+    },
+    {
+      value: "50K+",
+      label: "Evaluations",
+      icon: <BarChart className="w-4 h-4" />,
+    },
+    {
+      value: "24/7",
+      label: "Availability",
+      icon: <Shield className="w-4 h-4" />,
+    },
   ];
 
   const features = [
@@ -314,7 +337,7 @@ const ProfessionalBusiness = () => {
     "Real-time Grading",
     "Detailed Analytics",
     "Multi-Format Support",
-    "Secure Cloud Storage"
+    "Secure Cloud Storage",
   ];
 
   const handlePlayVideo = () => {
@@ -393,9 +416,11 @@ const ProfessionalBusiness = () => {
           <div className="text-center mb-16">
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-purple-600/20 to-blue-600/20 border border-white/10 backdrop-blur-sm mb-6">
               <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
-              <span className="text-sm font-medium text-white/80">Student-Centric Innovation</span>
+              <span className="text-sm font-medium text-white/80">
+                Student-Centric Innovation
+              </span>
             </div>
-            
+
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white mb-6">
               <span className="bg-gradient-to-r from-white via-purple-200 to-blue-200 bg-clip-text text-transparent">
                 Built by Students,
@@ -403,9 +428,10 @@ const ProfessionalBusiness = () => {
               <br />
               <span className="text-white">for Students</span>
             </h1>
-            
+
             <p className="text-xl text-white/60 max-w-3xl mx-auto">
-              Empowering educators with intelligent tools designed by the very learners they serve
+              Empowering educators with intelligent tools designed by the very
+              learners they serve
             </p>
           </div>
 
@@ -419,24 +445,32 @@ const ProfessionalBusiness = () => {
                   <div className="p-2 rounded-lg bg-gradient-to-r from-purple-600/20 to-blue-600/20 border border-white/10">
                     <Sparkles className="w-5 h-5 text-purple-300" />
                   </div>
-                  <h3 className="text-2xl font-bold text-white">Revolutionizing Academic Evaluation</h3>
+                  <h3 className="text-2xl font-bold text-white">
+                    Revolutionizing Academic Evaluation
+                  </h3>
                 </div>
                 <p className="text-white/70 mb-4">
-                  Watch how SmartEval automates assignment evaluation — from plagiarism detection
-                  to handwriting verification and AI-assisted scoring.
+                  Watch how SmartEval automates assignment evaluation — from
+                  plagiarism detection to handwriting verification and
+                  AI-assisted scoring.
                 </p>
                 <p className="text-white/70">
-                  Our workflow helps teachers save time, maintain fairness, 
-                  and provide detailed insights for every student submission.
+                  Our workflow helps teachers save time, maintain fairness, and
+                  provide detailed insights for every student submission.
                 </p>
               </div>
 
               {/* Features List */}
               <div className="bg-gradient-to-br from-gray-900/50 to-gray-900/30 backdrop-blur-sm rounded-2xl border border-white/10 p-8">
-                <h3 className="text-xl font-bold text-white mb-6">Core Features</h3>
+                <h3 className="text-xl font-bold text-white mb-6">
+                  Core Features
+                </h3>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   {features.map((feature, index) => (
-                    <div key={index} className="flex items-center gap-3 p-3 rounded-lg bg-white/5 hover:bg-white/10 transition-all duration-300">
+                    <div
+                      key={index}
+                      className="flex items-center gap-3 p-3 rounded-lg bg-white/5 hover:bg-white/10 transition-all duration-300"
+                    >
                       <div className="w-2 h-2 rounded-full bg-gradient-to-r from-purple-600 to-blue-600"></div>
                       <span className="text-white/80 text-sm">{feature}</span>
                     </div>
@@ -447,11 +481,16 @@ const ProfessionalBusiness = () => {
               {/* Stats */}
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
                 {stats.map((stat, index) => (
-                  <div key={index} className="bg-gradient-to-br from-gray-900/50 to-gray-900/30 backdrop-blur-sm rounded-xl border border-white/10 p-4 text-center">
+                  <div
+                    key={index}
+                    className="bg-gradient-to-br from-gray-900/50 to-gray-900/30 backdrop-blur-sm rounded-xl border border-white/10 p-4 text-center"
+                  >
                     <div className="flex justify-center mb-2 text-purple-300">
                       {stat.icon}
                     </div>
-                    <div className="text-2xl font-bold text-white mb-1">{stat.value}</div>
+                    <div className="text-2xl font-bold text-white mb-1">
+                      {stat.value}
+                    </div>
                     <div className="text-xs text-white/60">{stat.label}</div>
                   </div>
                 ))}
@@ -484,7 +523,9 @@ const ProfessionalBusiness = () => {
                           <Play className="w-8 h-8 text-white ml-1" />
                           <div className="absolute inset-0 rounded-full bg-gradient-to-r from-purple-600 to-blue-600 blur-md opacity-50 group-hover:opacity-100 transition-opacity duration-300"></div>
                         </button>
-                        <p className="mt-4 text-white/80 text-sm">Click to watch demo</p>
+                        <p className="mt-4 text-white/80 text-sm">
+                          Click to watch demo
+                        </p>
                       </div>
                     </div>
                   ) : (
@@ -494,13 +535,16 @@ const ProfessionalBusiness = () => {
                       controls
                       onEnded={() => setIsPlaying(false)}
                     >
-                      <source src="https://assets.mixkit.co/videos/preview/mixkit-abstract-waves-on-a-dark-background-3649-large.mp4" type="video/mp4" />
+                      <source
+                        src="https://assets.mixkit.co/videos/preview/mixkit-abstract-waves-on-a-dark-background-3649-large.mp4"
+                        type="video/mp4"
+                      />
                     </video>
                   )}
-                  
+
                   {/* Animated Background Gradient */}
                   <div className="absolute inset-0 bg-gradient-to-tr from-purple-900/20 via-transparent to-blue-900/20"></div>
-                  
+
                   {/* Animated Lines Overlay */}
                   <div className="absolute inset-0 opacity-30">
                     <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-purple-500 to-transparent animate-pulse"></div>
@@ -528,11 +572,14 @@ const ProfessionalBusiness = () => {
                       SmartEval in Action
                     </h3>
                     <p className="text-white/70 mb-6">
-                      Experience the future of academic evaluation with our interactive demo
+                      Experience the future of academic evaluation with our
+                      interactive demo
                     </p>
                     <div className="flex items-center justify-center gap-4">
                       <div className="w-3 h-3 rounded-full bg-green-400 animate-pulse"></div>
-                      <span className="text-sm text-white/60">Real-time Processing</span>
+                      <span className="text-sm text-white/60">
+                        Real-time Processing
+                      </span>
                     </div>
                   </div>
 
@@ -548,7 +595,9 @@ const ProfessionalBusiness = () => {
                     </div>
                     <div className="text-center">
                       <div className="text-2xl font-bold text-white">10x</div>
-                      <div className="text-xs text-white/50">Faster Grading</div>
+                      <div className="text-xs text-white/50">
+                        Faster Grading
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -556,7 +605,10 @@ const ProfessionalBusiness = () => {
 
               {/* Floating Elements */}
               <div className="absolute -top-4 -right-4 w-24 h-24 bg-gradient-to-r from-purple-600/20 to-blue-600/20 rounded-full blur-xl animate-float"></div>
-              <div className="absolute -bottom-4 -left-4 w-16 h-16 bg-gradient-to-r from-blue-600/20 to-cyan-600/20 rounded-full blur-xl animate-float" style={{ animationDelay: '1.5s' }}></div>
+              <div
+                className="absolute -bottom-4 -left-4 w-16 h-16 bg-gradient-to-r from-blue-600/20 to-cyan-600/20 rounded-full blur-xl animate-float"
+                style={{ animationDelay: "1.5s" }}
+              ></div>
             </div>
           </div>
 
@@ -569,22 +621,10 @@ const ProfessionalBusiness = () => {
                   Join the Education Revolution
                 </h3>
                 <p className="text-xl text-white/60 mb-8">
-                  Thousands of educators are already transforming their evaluation process with SmartEval
+                  Thousands of educators are already transforming their
+                  evaluation process with SmartEval
                 </p>
-                <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                  <button className="group px-8 py-4 rounded-full bg-gradient-to-r from-purple-600 to-blue-600 text-white font-medium hover:shadow-2xl hover:shadow-purple-500/30 transition-all duration-300 hover:scale-105">
-                    <span className="flex items-center gap-3">
-                      Start Free Trial
-                      <ArrowRight className="w-5 h-5 transition-transform group-hover:translate-x-1" />
-                    </span>
-                  </button>
-                  <button className="px-8 py-4 rounded-full bg-white/10 backdrop-blur-sm text-white font-medium border border-white/20 hover:bg-white/20 transition-all duration-300">
-                    <span className="flex items-center gap-3">
-                      <Download className="w-5 h-5" />
-                      Download Whitepaper
-                    </span>
-                  </button>
-                </div>
+              
               </div>
             </div>
           </div>

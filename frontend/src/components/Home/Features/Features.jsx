@@ -96,13 +96,6 @@ export default function Features() {
               educators evaluate and analyze student work.
             </p>
           </div>
-
-          <div className="lg:w-auto">
-            <button className="group flex items-center gap-3 px-8 py-4 rounded-full bg-gradient-to-r from-purple-600 to-blue-600 text-white font-medium hover:shadow-2xl hover:shadow-purple-500/30 transition-all duration-300 hover:scale-105">
-              <span>Explore All Features</span>
-              <IoIosArrowRoundForward className="w-6 h-6 transition-transform group-hover:translate-x-1" />
-            </button>
-          </div>
         </div>
       </div>
 

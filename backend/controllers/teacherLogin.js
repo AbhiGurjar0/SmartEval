@@ -33,9 +33,9 @@ export const teacherLogin = async (req, res) => {
   let token = jwt.sign(
     { enrollmentNumber: teacher.enrollmentNumber, id: teacher._id, role: role },
     process.env.JWT_SECRET,
-    { expiresIn: "7d" }
+    { expiresIn: "7d" },
   );
-  console.log(token)
+  console.log(token);
 
   res.cookie("token", token, {
     httpOnly: true,
@@ -68,11 +68,8 @@ export const teacherRegister = async (req, res) => {
       req.flash("error", "Teacher Already Exist. Please Login");
       return res.json({ success: false, messages: req.flash("error") });
     }
-
     password = await bcrypt.hash(password, 10);
-
     let teacher = await Teachers.create({ name, enrollmentNumber, password });
-
     req.flash("success", "Teacher Registered Successfully. Please Login");
     return res.json({ success: true, messages: req.flash("success") });
   } catch (err) {

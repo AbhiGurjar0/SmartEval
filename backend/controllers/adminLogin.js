@@ -33,7 +33,7 @@ export const adminLogin = async (req, res) => {
   let token = jwt.sign(
     { enrollmentNumber: admin.enrollmentNumber, id: admin._id, role: role },
     process.env.JWT_SECRET,
-    { expiresIn: "7d" }
+    { expiresIn: "7d" },
   );
 
   res.cookie("token", token, {
@@ -71,10 +71,21 @@ export const adminRegister = async (req, res) => {
 
     let admin = await Admin.create({ name, enrollmentNumber, password });
 
-    req.flash("success", "Teacher Registered Successfully. Please Login");
+    req.flash("success", "Admin Registered Successfully. Please Login");
     return res.json({ success: true, messages: req.flash("success") });
   } catch (err) {
     req.flash("error", "Error in register");
     return res.json({ success: false, messages: req.flash("error") });
   }
+};
+export const adminLogout = async (req, res) => {
+  console.log("Admin Logout Called");
+  res.clearCookie("token", {
+    httpOnly: true,
+    sameSite: "lax",
+    secure: false,
+  });
+
+  req.flash("success", "Admin Logged Out Successfully");
+  return res.json({ success: true, messages: req.flash("success") });
 };
