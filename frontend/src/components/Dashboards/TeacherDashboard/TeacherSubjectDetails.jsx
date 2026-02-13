@@ -72,13 +72,13 @@ const EnrollmentModal = ({ onClose }) => {
       // Validate format (example: EN123456)
       const enrollmentPattern = /^[A-Z]{2}\d{6}$/;
       const invalidEnrollments = enrollments.filter(
-        (e) => !enrollmentPattern.test(e)
+        (e) => !enrollmentPattern.test(e),
       );
 
       if (invalidEnrollments.length > 0) {
         setIsValid(false);
         throw new Error(
-          `Invalid enrollment format: ${invalidEnrollments.join(", ")}`
+          `Invalid enrollment format: ${invalidEnrollments.join(", ")}`,
         );
       }
 
@@ -409,9 +409,10 @@ const TeacherSubjectDetails = () => {
   useEffect(() => {
     if (subjects) {
       let subject = subjects.filter((sub) => sub._id === subjectId);
+      console.log(subject, "subject from teacher dash");
       if (subject) {
-        setAssignments(subject.assignments || []);
-        seCurrSubject(subject);
+        setAssignments(subject[0].assignments || []);
+        seCurrSubject(subject[0]);
       }
     }
   }, [subjects, subjectId]);
@@ -419,7 +420,7 @@ const TeacherSubjectDetails = () => {
   console.log(subjects, "from teacher dash");
 
   const handleSeeDetails = (assignmentId) => {
-    navigate(`/teacher/assignment/${assignmentId}`);
+    navigate(`/teacher/subject/${subjectId}/assignment/${assignmentId}`);
   };
 
   const handleCreateAssignment = async (e) => {
@@ -472,7 +473,7 @@ const TeacherSubjectDetails = () => {
   console.log(assignments);
   const totalSubmissions = assignments.reduce(
     (sum, a) => sum + (a.submissions.length || 0),
-    0
+    0,
   );
   const evaluatedSubmissions = assignments.reduce((sum, a) => {
     let count = 0;
@@ -784,7 +785,7 @@ const TeacherSubjectDetails = () => {
 
                 const evaluatedCount = submissions.reduce(
                   (sum, sub) => sum + (sub.status === "Completed" ? 1 : 0),
-                  0
+                  0,
                 );
 
                 const remainingCount = submissionCount - evaluatedCount;
@@ -873,7 +874,7 @@ const TeacherSubjectDetails = () => {
                             </span>
                             <span className="text-white">
                               {Math.round(
-                                (evaluatedCount / submissionCount) * 100
+                                (evaluatedCount / submissionCount) * 100,
                               ) || 0}
                               %
                             </span>

@@ -4,7 +4,6 @@ import LoginHeader from "../components/Home/Headers/LoginHeader";
 import HeroSection from "../components/Home/LandingPage";
 import Features from "../components/Home/Features/Features";
 import FooterCTASection from "../components/Footer/FooterCTASection";
-import StudentDashboard from "./Student/Student";
 import { AuthContext } from "../context/AuthContext";
 import { useContext } from "react";
 import Steps from "../components/Home/Steps";

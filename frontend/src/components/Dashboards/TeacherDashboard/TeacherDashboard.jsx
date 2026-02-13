@@ -98,7 +98,7 @@ const TeacherDashboard = () => {
           ? Math.round(
               ((subject.totalAssignment - subject.pending) /
                 subject.totalAssignment) *
-                100
+                100,
             )
           : 0,
       avgScore: 85, // TODO: Calculate from actual grades
@@ -279,19 +279,7 @@ const TeacherDashboard = () => {
                 Manage all your assigned courses and track student progress
               </p>
             </div>
-            <div className="flex items-center gap-3">
-              <button
-                onClick={() => navigate("/teacher/dashboard")}
-                className="px-4 py-2 rounded-lg bg-white/5 border border-white/10 hover:bg-white/10 transition-all duration-200 flex items-center gap-2"
-              >
-                <Home className="w-4 h-4" />
-                <span>Dashboard</span>
-              </button>
-              <button className="px-4 py-2 rounded-lg bg-gradient-to-r from-purple-600 to-blue-600 hover:shadow-2xl hover:shadow-purple-500/30 transition-all duration-200 flex items-center gap-2">
-                <PlusCircle className="w-4 h-4" />
-                <span>Create Assignment</span>
-              </button>
-            </div>
+           
           </div>
 
           {/* Quick Stats */}
@@ -302,7 +290,7 @@ const TeacherDashboard = () => {
                   <div>
                     <p className="text-xs text-white/60">Total Subjects</p>
                     <p className="text-2xl font-bold text-white">
-                      {/* {filteredSubjects?.length} */}
+                      {filteredSubjects?.length}
                     </p>
                   </div>
                   <BookOpen className="w-8 h-8 text-purple-400/60" />
@@ -560,10 +548,10 @@ const TeacherDashboard = () => {
                           activity.type === "grading"
                             ? "bg-green-500/10"
                             : activity.type === "create"
-                            ? "bg-blue-500/10"
-                            : activity.type === "submission"
-                            ? "bg-purple-500/10"
-                            : "bg-orange-500/10"
+                              ? "bg-blue-500/10"
+                              : activity.type === "submission"
+                                ? "bg-purple-500/10"
+                                : "bg-orange-500/10"
                         }`}
                       >
                         {activity.type === "grading" && (

@@ -77,7 +77,6 @@ const AdminDashboard = () => {
   const [activeTab, setActiveTab] = useState("users");
   const [searchTerm, setSearchTerm] = useState("");
   const [showProfileMenu, setShowProfileMenu] = useState(false);
-  const [showAddUserModal, setShowAddUserModal] = useState(false);
   const [newUser, setNewUser] = useState({
     name: "",
     email: "",
@@ -283,6 +282,7 @@ const AdminDashboard = () => {
         });
 
         const data = await res.json();
+        console.log(data);
 
         if (data.success) {
           const newAllocationEntry = {
@@ -312,30 +312,7 @@ const AdminDashboard = () => {
     alert("Allocation removed successfully!");
   };
 
-  const handleAddUser = (e) => {
-    e.preventDefault();
-    if (newUser.name && newUser.email && newUser.enrollmentNumber) {
-      const newUserObj = {
-        id: Date.now(),
-        displayId: newUser.enrollmentNumber,
-        name: newUser.name,
-        role: newUser.role.charAt(0).toUpperCase() + newUser.role.slice(1),
-        email: newUser.email,
-        status: "Active",
-        lastActive: "Just now",
-      };
-      setUsers([...users, newUserObj]);
-      setNewUser({
-        name: "",
-        email: "",
-        role: "student",
-        enrollmentNumber: "",
-      });
-      setShowAddUserModal(false);
-      alert("User added successfully!");
-    }
-  };
-
+  
   const exportData = () => {
     const data = {
       users,
@@ -500,13 +477,7 @@ const AdminDashboard = () => {
                 <Download className="w-4 h-4" />
                 <span className="text-sm">Export Data</span>
               </button>
-              <button
-                onClick={() => setShowAddUserModal(true)}
-                className="flex items-center gap-2 px-4 py-2 rounded-lg bg-gradient-to-r from-purple-600 to-blue-600 hover:shadow-2xl hover:shadow-purple-500/30 transition-all duration-200"
-              >
-                <UserPlus className="w-4 h-4" />
-                <span className="text-sm">Add User</span>
-              </button>
+             
             </div>
           </div>
 
@@ -673,31 +644,7 @@ const AdminDashboard = () => {
                         </td>
                         <td className="px-6 py-4">
                           <div className="flex items-center gap-2">
-                            <button
-                              onClick={() => toggleUserStatus(user.id)}
-                              className={`p-2 rounded-lg transition-all duration-200 ${
-                                user.status === "Active"
-                                  ? "bg-red-500/10 hover:bg-red-500/20 text-red-400"
-                                  : "bg-green-500/10 hover:bg-green-500/20 text-green-400"
-                              }`}
-                              title={
-                                user.status === "Active"
-                                  ? "Block User"
-                                  : "Unblock User"
-                              }
-                            >
-                              {user.status === "Active" ? (
-                                <UserX className="w-4 h-4" />
-                              ) : (
-                                <UserCheck className="w-4 h-4" />
-                              )}
-                            </button>
-                            <button
-                              className="p-2 rounded-lg bg-white/5 hover:bg-white/10 text-white/80 transition-all duration-200"
-                              title="Edit User"
-                            >
-                              <Edit3 className="w-4 h-4" />
-                            </button>
+                            
                             <button
                               className="p-2 rounded-lg bg-white/5 hover:bg-white/10 text-white/80 transition-all duration-200"
                               title="View Details"
@@ -1025,127 +972,7 @@ const AdminDashboard = () => {
         )}
       </div>
 
-      {/* Add User Modal */}
-      {showAddUserModal && (
-        <>
-          <div
-            className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50"
-            onClick={() => setShowAddUserModal(false)}
-          />
-          <div className="fixed inset-0 flex items-center justify-center z-50 p-4">
-            <div className="relative w-full max-w-md">
-              <div className="bg-gradient-to-br from-gray-900 to-gray-800 rounded-2xl border border-white/10 shadow-2xl">
-                <div className="p-6 border-b border-white/10">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                      <div className="p-2 rounded-lg bg-gradient-to-r from-purple-600 to-blue-600">
-                        <UserPlus className="w-6 h-6 text-white" />
-                      </div>
-                      <div>
-                        <h3 className="text-xl font-bold text-white">
-                          Add New User
-                        </h3>
-                        <p className="text-white/60 text-sm">
-                          Create a new user account
-                        </p>
-                      </div>
-                    </div>
-                    <button
-                      onClick={() => setShowAddUserModal(false)}
-                      className="p-2 rounded-lg hover:bg-white/10"
-                    >
-                      <span className="text-2xl text-white/60 hover:text-white">
-                        ×
-                      </span>
-                    </button>
-                  </div>
-                </div>
-                <form onSubmit={handleAddUser} className="p-6 space-y-4">
-                  <div>
-                    <label className="block text-sm text-white/60 mb-2">
-                      Full Name
-                    </label>
-                    <input
-                      type="text"
-                      value={newUser.name}
-                      onChange={(e) =>
-                        setNewUser({ ...newUser, name: e.target.value })
-                      }
-                      className="w-full px-4 py-3 rounded-lg bg-white/5 border border-white/10 text-white placeholder-white/40 focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:border-transparent"
-                      placeholder="Enter full name"
-                      required
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm text-white/60 mb-2">
-                      Email
-                    </label>
-                    <input
-                      type="email"
-                      value={newUser.email}
-                      onChange={(e) =>
-                        setNewUser({ ...newUser, email: e.target.value })
-                      }
-                      className="w-full px-4 py-3 rounded-lg bg-white/5 border border-white/10 text-white placeholder-white/40 focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:border-transparent"
-                      placeholder="Enter email"
-                      required
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm text-white/60 mb-2">
-                      Role
-                    </label>
-                    <select
-                      value={newUser.role}
-                      onChange={(e) =>
-                        setNewUser({ ...newUser, role: e.target.value })
-                      }
-                      className="w-full px-4 py-3 rounded-lg bg-white/5 border border-white/10 text-white focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:border-transparent"
-                    >
-                      <option value="student">Student</option>
-                      <option value="teacher">Teacher</option>
-                      <option value="admin">Admin</option>
-                    </select>
-                  </div>
-                  <div>
-                    <label className="block text-sm text-white/60 mb-2">
-                      Enrollment ID
-                    </label>
-                    <input
-                      type="text"
-                      value={newUser.enrollmentNumber}
-                      onChange={(e) =>
-                        setNewUser({
-                          ...newUser,
-                          enrollmentNumber: e.target.value,
-                        })
-                      }
-                      className="w-full px-4 py-3 rounded-lg bg-white/5 border border-white/10 text-white placeholder-white/40 focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:border-transparent"
-                      placeholder="Enter enrollment ID"
-                      required
-                    />
-                  </div>
-                  <div className="flex gap-4 pt-4">
-                    <button
-                      type="button"
-                      onClick={() => setShowAddUserModal(false)}
-                      className="flex-1 py-3 rounded-lg bg-white/5 border border-white/10 text-white hover:bg-white/10 transition-all duration-200"
-                    >
-                      Cancel
-                    </button>
-                    <button
-                      type="submit"
-                      className="flex-1 py-3 rounded-lg bg-gradient-to-r from-purple-600 to-blue-600 text-white font-medium hover:shadow-2xl hover:shadow-purple-500/30 transition-all duration-200"
-                    >
-                      Create User
-                    </button>
-                  </div>
-                </form>
-              </div>
-            </div>
-          </div>
-        </>
-      )}
+      
     </div>
   );
 };

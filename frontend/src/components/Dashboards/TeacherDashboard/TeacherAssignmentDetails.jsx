@@ -29,6 +29,7 @@ const TeacherAssignmentDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const { subjects } = useTeacher();
+  const {subjectId} = useParams();
   const [assignment, setAssignment] = useState(null);
   const [submissions, setSubmissions] = useState([]);
   const [selected, setSelected] = useState(null);
@@ -40,11 +41,14 @@ const TeacherAssignmentDetails = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    if (subjects && subjects.assignments) {
-      const foundAssignment = subjects.assignments.find(
-        (assign) => assign._id === id
+    if (subjects) {
+
+
+
+      const foundAssignment = subjects.find(s => s._id === subjectId)?.assignments.find(
+        (assign) => assign._id === id,
       );
-      console.log(foundAssignment);
+      console.log("foundAssignment", foundAssignment);
       setAssignment(foundAssignment || null);
     }
   }, [subjects, id]);
@@ -62,12 +66,8 @@ const TeacherAssignmentDetails = () => {
         email: sub.studentId?.email || "N/A",
         studentId: sub.studentId?.enrollmentNumber || "N/A",
         status: sub.status || "In Review",
-        submissionDate: new Date(
-          sub.createdAt 
-        ).toLocaleDateString()||null,
-        submissionTime: new Date(
-          sub.createdAt 
-        ).toLocaleTimeString()||null,
+        submissionDate: new Date(sub.createdAt).toLocaleDateString() || null,
+        submissionTime: new Date(sub.createdAt).toLocaleTimeString() || null,
         pdfName: sub.file?.fileName || "submission.pdf",
         score: sub.marks || null,
         maxScore: assignment.marks,
@@ -77,7 +77,7 @@ const TeacherAssignmentDetails = () => {
         wordCount: sub.wordCount || 0,
         feedback: sub?.plagId?.reasons || [],
         solutionId: sub._id,
-      }))
+      })),
     );
 
     setAssignmentDetails({
@@ -99,10 +99,10 @@ const TeacherAssignmentDetails = () => {
 
   const totalCount = submissions.length;
   const evaluatedCount = submissions.filter(
-    (s) => s.status === "Completed"
+    (s) => s.status === "Completed",
   ).length;
   const pendingCount = submissions.filter(
-    (s) => s.status === "In Review"
+    (s) => s.status === "In Review",
   ).length;
   const averageScore =
     evaluatedCount > 0
@@ -155,8 +155,8 @@ const TeacherAssignmentDetails = () => {
               status: feedback.status,
               feedback: feedback.comments,
             }
-          : item
-      )
+          : item,
+      ),
     );
   };
 
@@ -613,8 +613,8 @@ const TeacherAssignmentDetails = () => {
                           student.plagiarismPercent > 20
                             ? "bg-gradient-to-r from-red-600 to-orange-600"
                             : student.plagiarismPercent > 10
-                            ? "bg-gradient-to-r from-yellow-600 to-orange-600"
-                            : "bg-gradient-to-r from-green-600 to-emerald-600"
+                              ? "bg-gradient-to-r from-yellow-600 to-orange-600"
+                              : "bg-gradient-to-r from-green-600 to-emerald-600"
                         }`}
                         style={{
                           width: `${Math.min(student.plagiarismPercent, 100)}%`,

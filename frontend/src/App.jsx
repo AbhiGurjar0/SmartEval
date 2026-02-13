@@ -10,9 +10,7 @@ import { TeacherProvider } from "./context/TeacherContext";
 import Home from "./Pages/Home";
 import Login from "./Pages/Login";
 import Register from "./Pages/Register";
-import Teacher from "./Pages/Teacher";
 import HeaderWrapper from "./components/Home/Headers/HeaderWrapper";
-import AuthPage from "./Pages/Register";
 import AdminDashboard from "./components/Dashboards/AdminDashboard/AdminDashboard";
 import FloatingAnimate from "./Animations/FloatingAnimate";
 
@@ -53,8 +51,6 @@ function App() {
                       path="/student/subject/:subjectId/assignment/:id"
                       element={<StudentAssignmentUpload />}
                     />
-
-                    <Route path="/teacher" element={<Teacher />} />
                     <Route
                       path="/teacher/dashboard"
                       element={<TeacherDashboard />}
@@ -64,7 +60,7 @@ function App() {
                       element={<TeacherSubjectDashboard />}
                     />
                     <Route
-                      path="/teacher/assignment/:id"
+                      path="/teacher/subject/:subjectId/assignment/:id"
                       element={<TeacherAssignmentDetails />}
                     />
 
