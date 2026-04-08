@@ -11,6 +11,7 @@ export const ToastProvider = ({ children }) => {
       setToast(null);
     }, 3000);
   };
+  
 
   return (
     <ToastContext.Provider value={{ showToast }}>

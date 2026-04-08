@@ -5,10 +5,11 @@ export const AuthContext = createContext();
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const VITE_URL = import.meta.env.VITE_URL;
 
   const checkLogin = async () => {
     try {
-      const res = await fetch("http://localhost:3000/auth/check", {
+      const res = await fetch(`${VITE_URL}/auth/check`, {
         credentials: "include",
       });
       const data = await res.json();

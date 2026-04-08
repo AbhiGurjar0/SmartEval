@@ -38,6 +38,7 @@ const StudentDashboard = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [filter, setFilter] = useState("all");
   const [showProfileMenu, setShowProfileMenu] = useState(false);
+   const VITE_URL = import.meta.env.VITE_URL;
 
   useEffect(() => {
     if (subjects) {

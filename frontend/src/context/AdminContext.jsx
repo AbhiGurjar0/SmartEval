@@ -5,16 +5,18 @@ const AdminContext = createContext();
 export const AdminProvider = ({ children }) => {
   const [subjects, setSubjects] = useState([]);
   const [teachers, setTeachers] = useState([]);
+
   const [students, setStudents] = useState([]); // This state exists, which is good
+
 
   const allDetails = async () => {
     try {
-      const res = await fetch("http://localhost:3000/admin/allDetails", {
+      const res = await fetch(`${VITE_URL}/admin/allDetails`, {
         credentials: "include", // This is important for cookies, good job keeping it
       });
       let data = await res.json();
       console.log("Admin Context ", data);
-      
+
       if (data.subjects) {
         setSubjects(data.subjects);
       }

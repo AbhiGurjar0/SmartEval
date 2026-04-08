@@ -46,6 +46,7 @@ const EnrollmentModal = ({ onClose }) => {
   const [multipleInput, setMultipleInput] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isValid, setIsValid] = useState(null);
+   const VITE_URL = import.meta.env.VITE_URL;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -85,7 +86,7 @@ const EnrollmentModal = ({ onClose }) => {
       setIsValid(true);
 
       // Simulate API call
-      let res = await fetch("http://localhost:3000/teacher/InviteStudents", {
+      let res = await fetch(`${VITE_URL}/teacher/InviteStudents`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -427,7 +428,7 @@ const TeacherSubjectDetails = () => {
     e.preventDefault();
     // Add your assignment creation logic here
     console.log("Creating assignment:", newAssignment);
-    let res = await fetch("http://localhost:3000/teacher/addAssignment", {
+    let res = await fetch(`${VITE_URL}/teacher/addAssignment`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

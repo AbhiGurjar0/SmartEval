@@ -46,6 +46,7 @@ import { useAdmin } from "../../../context/AdminContext";
 const AdminDashboard = () => {
   // Context data
   const { subjects, teachers, students } = useAdmin();
+   const VITE_URL = import.meta.env.VITE_URL;
 
   // Local State
   const [subjectsData, setsubjectsData] = useState([]);
@@ -218,7 +219,7 @@ const AdminDashboard = () => {
       };
 
       try {
-        let res = await fetch("http://localhost:3000/admin/addSubject", {
+        let res = await fetch(`${VITE_URL}/admin/addSubject`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(subjectPayload),
@@ -272,7 +273,7 @@ const AdminDashboard = () => {
 
     if (teacher && subject) {
       try {
-        let res = await fetch("http://localhost:3000/admin/allocation", {
+        let res = await fetch(`${VITE_URL}/admin/allocation`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({

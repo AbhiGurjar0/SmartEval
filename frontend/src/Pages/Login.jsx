@@ -28,6 +28,7 @@ const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
+  const VITE_URL = import.meta.env.VITE_URL;
 
   const submitHandler = async (e) => {
     e.preventDefault();
@@ -37,7 +38,7 @@ const Login = () => {
       console.log(form);
       let res = "";
       if (form.role === "teacher") {
-        res = await fetch("http://localhost:3000/teacher/login", {
+        res = await fetch(`${VITE_URL}/teacher/login`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -46,7 +47,7 @@ const Login = () => {
           body: JSON.stringify(form),
         });
       } else if (form.role === "admin") {
-        res = await fetch("http://localhost:3000/admin/login", {
+        res = await fetch(`${VITE_URL}/admin/login`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -55,7 +56,7 @@ const Login = () => {
           body: JSON.stringify(form),
         });
       } else {
-        res = await fetch("http://localhost:3000/user/login", {
+        res = await fetch(`${VITE_URL}/user/login`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",

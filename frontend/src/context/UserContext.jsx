@@ -3,10 +3,11 @@ import { createContext, useContext, useState, useEffect } from "react";
 const UserContext = createContext();
 export const UserProvider = ({ children }) => {
   const [subjects, setSubjects] = useState([]);
+    const VITE_URL = import.meta.env.VITE_URL;
 
   const allSubjects = async () => {
     try {
-      const res = await fetch("http://localhost:3000/student/allSubjects", {
+      const res = await fetch(`${VITE_URL}/student/allSubjects`, {
         credentials: "include",
       });
       let data = await res.json();

@@ -32,6 +32,7 @@ const StudentAssignmentUpload = () => {
   const [uploadProgress, setUploadProgress] = useState(0);
   const [submittedFileName, setSubmittedFileName] = useState(null);
   const [submissionTime, setSubmissionTime] = useState(null);
+  const VITE_URL = import.meta.env.VITE_URL;
 
   useEffect(() => {
     if (subjects && subjectId && id) {
@@ -97,7 +98,7 @@ const StudentAssignmentUpload = () => {
       }, 150);
 
       const response = await fetch(
-        "http://localhost:3000/student/assignment/upload",
+        `${VITE_URL}/student/assignment/upload`,
         {
           method: "POST",
           body: formData,

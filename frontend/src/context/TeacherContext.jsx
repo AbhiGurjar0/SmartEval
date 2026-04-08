@@ -6,10 +6,11 @@ export const TeacherProvider = ({ children }) => {
   const [subjects, setSubjects] = useState(null);
   const [students, setStudents] = useState(null);
   const { user } = useAuth();
+    const VITE_URL = import.meta.env.VITE_URL;
 
   const allDetails = async () => {
     try {
-      const res = await fetch("http://localhost:3000/teacher/allDetails", {
+      const res = await fetch(`${VITE_URL}/teacher/allDetails`, {
         credentials: "include",
       });
       let data = await res.json();

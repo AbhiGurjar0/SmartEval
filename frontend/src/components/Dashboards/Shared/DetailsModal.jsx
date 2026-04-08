@@ -119,6 +119,7 @@ const DetailsModal = ({
   const [statusOverride, setStatusOverride] = useState(
     student.status || "In Review"
   );
+  const VITE_URL = import.meta.env.VITE_URL;
 
   useEffect(() => {
     if (student) {
@@ -137,7 +138,7 @@ const DetailsModal = ({
       reviewMessage: teacherNotes,
       createdAt: new Date(),
     };
-    let res = await fetch("http://localhost:3000/teacher/addMarks", {
+    let res = await fetch(`${VITE_URL}/teacher/addMarks`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",

@@ -39,6 +39,7 @@ export default function RegisterPage() {
       showToast("Passwords do not match", "error");
       return;
     }
+    const VITE_URL = import.meta.env.VITE_URL;
 
     setIsLoading(true);
 
@@ -46,7 +47,7 @@ export default function RegisterPage() {
       let res = "";
       console.log(formData)
       if (formData.role === "teacher") {
-        res = await fetch("http://localhost:3000/teacher/register", {
+        res = await fetch(`${VITE_URL}/teacher/register`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -55,7 +56,7 @@ export default function RegisterPage() {
           body: JSON.stringify(formData),
         });
       } else if (formData.role === "admin") {
-        res = await fetch("http://localhost:3000/admin/register", {
+        res = await fetch(`${VITE_URL}/admin/register`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -64,7 +65,7 @@ export default function RegisterPage() {
           body: JSON.stringify(formData),
         });
       } else {
-        res = await fetch("http://localhost:3000/user/register", {
+        res = await fetch(`${VITE_URL}/user/register`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",

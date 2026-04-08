@@ -23,14 +23,16 @@ const LoginHeader = () => {
   const scrollClass =
     scrollDirection === "down" ? "-translate-y-full" : "translate-y-0";
 
+  const VITE_URL = import.meta.env.VITE_URL;
+
   const handleLogout = () => {
     // Call your logout function
     if (user.role === "Admin") {
-      axios.post("http://localhost:3000/admin/logout");
+      axios.post(`${VITE_URL}/admin/logout`);
     } else if (user.role === "teacher") {
-      axios.post("http://localhost:3000/teacher/logout");
+      axios.post(`${VITE_URL}/teacher/logout`);
     } else if (user.role === "student") {
-      axios.post("http://localhost:3000/user/logout");
+      axios.post(`${VITE_URL}/user/logout`);
     }
     navigate("/login");
     setShowDropdown(false);
