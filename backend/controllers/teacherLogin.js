@@ -37,11 +37,12 @@ export const teacherLogin = async (req, res) => {
   );
   console.log(token);
 
-  res.cookie("token", token, {
+    res.cookie("token", token, {
     httpOnly: true,
     sameSite: "lax",
-    secure: false,
+    secure: process.env.NODE_ENV === "production",
   });
+
   console.log(res.cookie.token);
 
   req.flash("success", "Teacher Logged In Successfully 🎉");

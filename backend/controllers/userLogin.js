@@ -41,16 +41,13 @@ export const userLogin = async (req, res) => {
   }
 
   let user = await Students.findOne({ enrollmentNumber });
-  
+
   if (!user) {
     req.flash("error", "User does not exist. Please Register First!");
     return res.json({ success: false, messages: req.flash("error") });
   }
-  
-  
 
   const validPass = await bcrypt.compare(password, user.password);
-
 
   if (!validPass) {
     req.flash("error", "Invalid enrollmentNumber or Password");
@@ -60,15 +57,14 @@ export const userLogin = async (req, res) => {
   let token = jwt.sign(
     { enrollmentNumber: user.enrollmentNumber, id: user._id, role: role },
     process.env.JWT_SECRET,
-    { expiresIn: "7d" }
+    { expiresIn: "7d" },
   );
 
   res.cookie("token", token, {
     httpOnly: true,
     sameSite: "lax",
-    secure: false,
+    secure: process.env.NODE_ENV === "production",
   });
-
 
   req.flash("success", "User Logged In Successfully 🎉");
   return res.json({

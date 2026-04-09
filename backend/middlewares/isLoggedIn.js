@@ -8,6 +8,7 @@ dotenv.config();
 export const isLoggedIn = async (req, res, next) => {
   try {
     let token = req.cookies.token;
+    console.log("Token in Middleware: ", token);
 
     if (!token) {
       req.flash("error", "You are not loggedIn Please login");
@@ -15,6 +16,7 @@ export const isLoggedIn = async (req, res, next) => {
     }
 
     let decoded = await jwt.verify(token, process.env.JWT_SECRET);
+    console.log("Decoded Token in Middleware: ", decoded);
 
     req.user = decoded;
     next();
