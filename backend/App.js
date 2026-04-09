@@ -27,7 +27,7 @@ app.use(bodyParser.json({ limit: "5mb" }));
 //middlwares
 app.use(
   cors({
-    origin: ["http://localhost:5173", "http://localhost:5171"],
+    origin: ["http://localhost:5173", "http://localhost:5171", "https://smarteval-toko.onrender.com"],
     credentials: true,
     methods: ["GET", "POST", "PATCH", "PUT"], // optional but recommended
     allowedHeaders: ["Content-Type"], // required for fetch
