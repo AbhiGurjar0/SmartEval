@@ -39,7 +39,7 @@ export const adminLogin = async (req, res) => {
   res.cookie("token", token, {
     httpOnly: true,
     sameSite: "lax",
-    secure: process.env.NODE_ENV === "production",
+    secure: "true",
   });
 
   req.flash("success", "admin Logged In Successfully 🎉");

@@ -40,7 +40,7 @@ export const teacherLogin = async (req, res) => {
     res.cookie("token", token, {
     httpOnly: true,
     sameSite: "lax",
-    secure: process.env.NODE_ENV === "production",
+    secure: "true",
   });
 
   console.log(res.cookie.token);

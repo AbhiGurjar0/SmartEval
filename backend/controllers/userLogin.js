@@ -63,7 +63,7 @@ export const userLogin = async (req, res) => {
   res.cookie("token", token, {
     httpOnly: true,
     sameSite: "lax",
-    secure: process.env.NODE_ENV === "production",
+    secure: "true",
   });
 
   req.flash("success", "User Logged In Successfully 🎉");
