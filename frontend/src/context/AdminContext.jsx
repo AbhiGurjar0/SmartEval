@@ -5,8 +5,8 @@ const AdminContext = createContext();
 export const AdminProvider = ({ children }) => {
   const [subjects, setSubjects] = useState([]);
   const [teachers, setTeachers] = useState([]);
-
   const [students, setStudents] = useState([]); // This state exists, which is good
+  const VITE_URL = import.meta.env.VITE_URL;
 
 
   const allDetails = async () => {

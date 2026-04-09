@@ -38,7 +38,7 @@ const StudentDashboard = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [filter, setFilter] = useState("all");
   const [showProfileMenu, setShowProfileMenu] = useState(false);
-   const VITE_URL = import.meta.env.VITE_URL;
+  const VITE_URL = import.meta.env.VITE_URL;
 
   useEffect(() => {
     if (subjects) {
@@ -69,10 +69,10 @@ const StudentDashboard = () => {
 
   const totalPending = enrolledSubjects.reduce(
     (sum, sub) => sum + sub.pending,
-    0
+    0,
   );
   const completedSubjects = enrolledSubjects.filter(
-    (sub) => sub.pending === 0
+    (sub) => sub.pending === 0,
   ).length;
 
   return (
@@ -409,14 +409,14 @@ const StudentDashboard = () => {
                         const submittedCount = subject.assignments.filter(
                           (assign) =>
                             assign.submissions?.some(
-                              (sub) => sub.studentId._id === user._id
-                            )
+                              (sub) => sub.studentId._id === user._id,
+                            ),
                         ).length;
 
                         const percentage = subject.assignments.length
                           ? Math.round(
                               (submittedCount / subject.assignments.length) *
-                                100
+                                100,
                             )
                           : 0;
 
