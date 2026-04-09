@@ -39,7 +39,7 @@ export const teacherLogin = async (req, res) => {
 
     res.cookie("token", token, {
     httpOnly: true,
-    sameSite: "lax",
+    sameSite: "none",
     secure: "true",
   });
 
