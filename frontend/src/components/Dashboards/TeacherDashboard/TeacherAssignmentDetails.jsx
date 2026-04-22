@@ -24,12 +24,14 @@ import {
 import StatusBadge from "../Shared/StatusBadge";
 import DetailsModal from "../Shared/DetailsModal";
 import { useTeacher } from "../../../context/TeacherContext";
+import { useAuth } from "../../../context/AuthContext";
 
 const TeacherAssignmentDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { subjects } = useTeacher();
-  const {subjectId} = useParams();
+   const { user } = useAuth();
+  const { subjects, setStudents , setSubjects ,refetchTeacherData } = useTeacher();
+  const { subjectId } = useParams();
   const [assignment, setAssignment] = useState(null);
   const [submissions, setSubmissions] = useState([]);
   const [selected, setSelected] = useState(null);
@@ -41,13 +43,24 @@ const TeacherAssignmentDetails = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
+    if (user) {
+      // Clear previous data first
+      setSubjects(null);
+      setStudents(null);
+      // Then fetch new teacher's data
+      refetchTeacherData();
+    } else {
+      //   // Clear data when logged out
+      setSubjects(null);
+      setStudents(null);
+    }
+  }, [user]);
+
+  useEffect(() => {
     if (subjects) {
-
-
-
-      const foundAssignment = subjects.find(s => s._id === subjectId)?.assignments.find(
-        (assign) => assign._id === id,
-      );
+      const foundAssignment = subjects
+        .find((s) => s._id === subjectId)
+        ?.assignments.find((assign) => assign._id === id);
       console.log("foundAssignment", foundAssignment);
       setAssignment(foundAssignment || null);
     }

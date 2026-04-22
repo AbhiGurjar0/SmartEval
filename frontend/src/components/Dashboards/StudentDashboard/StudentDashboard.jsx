@@ -33,12 +33,15 @@ import { useState, useEffect } from "react";
 const StudentDashboard = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
-  const { subjects, setSubjects, logout } = useUser(); // Assuming logout function exists
+  const { subjects, setSubjects,  allSubjects } = useUser(); // Assuming logout function exists
   const [enrolledSubjects, setEnrolledSubjects] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [filter, setFilter] = useState("all");
   const [showProfileMenu, setShowProfileMenu] = useState(false);
   const VITE_URL = import.meta.env.VITE_URL;
+    useEffect(() => {
+      allSubjects();
+    }, []);
 
   useEffect(() => {
     if (subjects) {
@@ -56,7 +59,7 @@ const StudentDashboard = () => {
     navigate("/login");
   };
 
-  const filteredSubjects = enrolledSubjects.filter((subject) => {
+  const filteredSubjects = enrolledSubjects?.filter((subject) => {
     const matchesSearch =
       subject.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       subject.courseCode.toLowerCase().includes(searchTerm.toLowerCase());
@@ -152,58 +155,7 @@ const StudentDashboard = () => {
                   />
                 </button>
 
-                {/* Dropdown Menu */}
-                {showProfileMenu && (
-                  <>
-                    <div
-                      className="fixed inset-0 z-40"
-                      onClick={() => setShowProfileMenu(false)}
-                    />
-                    <div className="absolute right-0 top-full mt-2 w-64 rounded-xl border border-white/10 bg-gray-900/95 backdrop-blur-xl shadow-2xl shadow-purple-500/10 z-50 overflow-hidden animate-fade-in">
-                      <div className="p-4 border-b border-white/10">
-                        <div className="flex items-center gap-3">
-                          <div className="w-12 h-12 rounded-full bg-gradient-to-r from-purple-600 to-blue-600 flex items-center justify-center">
-                            <span className="text-lg font-bold text-white">
-                              {user?.name?.charAt(0).toUpperCase() || "S"}
-                            </span>
-                          </div>
-                          <div>
-                            <p className="text-sm font-medium text-white">
-                              {user?.name || "Student"}
-                            </p>
-                            <p className="text-xs text-white/60">
-                              {user?.email || "student@email.com"}
-                            </p>
-                          </div>
-                        </div>
-                      </div>
-
-                      <div className="p-2">
-                        <button
-                          onClick={() => navigate("/student/profile")}
-                          className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-white/80 hover:text-white hover:bg-white/10 transition-all duration-200"
-                        >
-                          <User className="w-4 h-4" />
-                          <span className="text-sm">My Profile</span>
-                        </button>
-                        <button
-                          onClick={() => navigate("/student/settings")}
-                          className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-white/80 hover:text-white hover:bg-white/10 transition-all duration-200"
-                        >
-                          <Settings className="w-4 h-4" />
-                          <span className="text-sm">Settings</span>
-                        </button>
-                        <button
-                          onClick={handleLogout}
-                          className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-red-400 hover:text-red-300 hover:bg-red-500/10 transition-all duration-200 mt-2"
-                        >
-                          <LogOut className="w-4 h-4" />
-                          <span className="text-sm">Sign Out</span>
-                        </button>
-                      </div>
-                    </div>
-                  </>
-                )}
+               
               </div>
             </div>
           </div>

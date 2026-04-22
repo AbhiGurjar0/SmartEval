@@ -14,7 +14,7 @@ export const TeacherProvider = ({ children }) => {
         credentials: "include",
       });
       let data = await res.json();
-      console.log("Teacher Context ", data);
+      // console.log("Teacher Context ", data);
       if (data.subjects) {
         setSubjects(data.subjects);
       } else {
@@ -31,22 +31,10 @@ export const TeacherProvider = ({ children }) => {
     }
   };
 
-  useEffect(() => {
-    if (user) {
-      // Clear previous data first
-      setSubjects(null);
-      setStudents(null);
-      // Then fetch new teacher's data
-      allDetails();
-    } else {
-      //   // Clear data when logged out
-      setSubjects(null);
-      setStudents(null);
-    }
-  }, [user]);
+
   return (
     <TeacherContext.Provider
-      value={{ subjects, students, refetchTeacherData: allDetails }}
+      value={{ subjects, students,setStudents , setSubjects, refetchTeacherData: allDetails }}
     >
       {children}
     </TeacherContext.Provider>

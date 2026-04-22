@@ -12,10 +12,10 @@ export const AdminProvider = ({ children }) => {
   const allDetails = async () => {
     try {
       const res = await fetch(`${VITE_URL}/admin/allDetails`, {
-        credentials: "include", // This is important for cookies, good job keeping it
+        credentials: "include", 
       });
       let data = await res.json();
-      console.log("Admin Context ", data);
+      // console.log("Admin Context ", data);
 
       if (data.subjects) {
         setSubjects(data.subjects);
@@ -28,20 +28,18 @@ export const AdminProvider = ({ children }) => {
       }
     } catch (err) {
       console.error(err);
-      setTeachers([]); // Better to set empty array than null to avoid crashes
+      setTeachers([]);
       setSubjects([]);
       setStudents([]);
     }
   };
 
-  useEffect(() => {
-    allDetails();
-  }, []);
+  
 
   return (
     <AdminContext.Provider
       // FIX: Added 'students' to this list so components can use it
-      value={{ subjects, teachers, students, setTeachers, setSubjects }}
+      value={{ subjects, teachers, students, setTeachers, setSubjects , allDetails }}
     >
       {children}
     </AdminContext.Provider>

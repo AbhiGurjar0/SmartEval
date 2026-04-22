@@ -7,19 +7,26 @@ import FooterCTASection from "../components/Footer/FooterCTASection";
 import { AuthContext } from "../context/AuthContext";
 import { useContext } from "react";
 import Steps from "../components/Home/Steps";
+import Loader from "../components/Dashboards/Shared/Loader";
 
 const Home = () => {
   const { user, loading } = useContext(AuthContext);
-  if (loading) return <p>Checking login…</p>;
+ 
   return (
-    <div className="relative z-10">
-      {user ? <LoginHeader /> : <NoLoginHeader />}
-      <HeroSection />
-      <Features />
-      <Steps />
-      <FooterCTASection />
-    </div>
-  );
+  <div className="relative z-10">
+    {user ? <LoginHeader /> : <NoLoginHeader />}
+    {loading ? (
+      <Loader />
+    ) : (
+      <>
+        <HeroSection />
+        <Features />
+        <Steps />
+        <FooterCTASection />
+      </>
+    )}
+  </div>
+);
 };
 
 export default Home;

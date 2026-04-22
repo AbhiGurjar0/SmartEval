@@ -45,8 +45,11 @@ import { useAdmin } from "../../../context/AdminContext";
 
 const AdminDashboard = () => {
   // Context data
-  const { subjects, teachers, students } = useAdmin();
-   const VITE_URL = import.meta.env.VITE_URL;
+  const { subjects, teachers, students, allDetails } = useAdmin();
+  useEffect(() => {
+    allDetails();
+  }, []);
+  const VITE_URL = import.meta.env.VITE_URL;
 
   // Local State
   const [subjectsData, setsubjectsData] = useState([]);
@@ -313,7 +316,6 @@ const AdminDashboard = () => {
     alert("Allocation removed successfully!");
   };
 
-  
   const exportData = () => {
     const data = {
       users,
@@ -478,7 +480,6 @@ const AdminDashboard = () => {
                 <Download className="w-4 h-4" />
                 <span className="text-sm">Export Data</span>
               </button>
-             
             </div>
           </div>
 
@@ -645,7 +646,6 @@ const AdminDashboard = () => {
                         </td>
                         <td className="px-6 py-4">
                           <div className="flex items-center gap-2">
-                            
                             <button
                               className="p-2 rounded-lg bg-white/5 hover:bg-white/10 text-white/80 transition-all duration-200"
                               title="View Details"
@@ -972,8 +972,6 @@ const AdminDashboard = () => {
           </div>
         )}
       </div>
-
-      
     </div>
   );
 };

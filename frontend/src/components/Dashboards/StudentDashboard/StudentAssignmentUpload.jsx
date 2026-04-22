@@ -20,8 +20,12 @@ const StudentAssignmentUpload = () => {
   const { subjectId, id } = useParams();
   const navigate = useNavigate();
   const [data, setData] = useState(null);
-  const { subjects } = useUser();
+  const { subjects, allSubjects } = useUser();
   const { user } = useAuth();
+
+  useEffect(() => {
+    allSubjects();
+  }, []);
   console.log("Data at using ", subjects);
 
   // State
@@ -40,12 +44,12 @@ const StudentAssignmentUpload = () => {
       if (foundSubject && foundSubject.assignments) {
         console.log("founded1");
         const foundAssignment = foundSubject.assignments.find(
-          (assignment) => assignment._id === id
+          (assignment) => assignment._id === id,
         );
         if (foundAssignment) {
           console.log("founded2", foundAssignment);
           const foundSolution = foundAssignment.submissions.find(
-            (sub) => sub.studentId._id === user._id
+            (sub) => sub.studentId._id === user._id,
           );
           if (foundSolution) {
             setStatus("Submitted");
@@ -97,14 +101,11 @@ const StudentAssignmentUpload = () => {
         }
       }, 150);
 
-      const response = await fetch(
-        `${VITE_URL}/student/assignment/upload`,
-        {
-          method: "POST",
-          body: formData,
-          credentials: "include",
-        }
-      );
+      const response = await fetch(`${VITE_URL}/student/assignment/upload`, {
+        method: "POST",
+        body: formData,
+        credentials: "include",
+      });
 
       const responseData = await response.json();
       console.log(responseData);
@@ -140,7 +141,7 @@ const StudentAssignmentUpload = () => {
       window.open(fileURL, "_blank");
     } else {
       alert(
-        `Opening ${submittedFileName}... (Backend required for real download)`
+        `Opening ${submittedFileName}... (Backend required for real download)`,
       );
     }
   };

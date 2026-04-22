@@ -17,8 +17,12 @@ const StudentSubjectDetails = () => {
   const { subjectId } = useParams();
   const [assignments, setAssignments] = useState([]);
   const [subject, setSubject] = useState(null);
-  const { subjects } = useUser();
+  const { subjects, allSubjects } = useUser();
   const { user } = useAuth();
+
+  useEffect(() => {
+    allSubjects();
+  }, []);
 
   useEffect(() => {
     if (subjects) {
@@ -26,13 +30,13 @@ const StudentSubjectDetails = () => {
 
       if (found) {
         setSubject(found);
-        console.log("founded",found)
+        console.log("founded", found);
 
         // Create updated assignments list
         const updatedAssignments =
           found.assignments?.map((assign) => {
             const submitted = assign.submissions?.find(
-              (sub) => sub?.studentId?._id === user?._id
+              (sub) => sub?.studentId?._id === user?._id,
             );
 
             return {

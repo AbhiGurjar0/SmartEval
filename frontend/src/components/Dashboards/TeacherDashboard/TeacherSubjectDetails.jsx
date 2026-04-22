@@ -34,6 +34,7 @@ import {
 
 import { useAuth } from "../../../context/AuthContext";
 import { useTeacher } from "../../../context/TeacherContext";
+const VITE_URL = import.meta.env.VITE_URL;
 
 const INPUT_MODE = {
   SINGLE: "single",
@@ -46,7 +47,6 @@ const EnrollmentModal = ({ onClose }) => {
   const [multipleInput, setMultipleInput] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isValid, setIsValid] = useState(null);
-   const VITE_URL = import.meta.env.VITE_URL;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -391,7 +391,7 @@ const TeacherSubjectDetails = () => {
   const { subjectId } = useParams();
   const [assignments, setAssignments] = useState([]);
   const { user } = useAuth();
-  const { subjects, refetchTeacherData } = useTeacher();
+  const { subjects,setStudents , setSubjects,  refetchTeacherData } = useTeacher();
   const [searchTerm, setSearchTerm] = useState("");
   const [filter, setFilter] = useState("all");
   const [showCreateAssignment, setShowCreateAssignment] = useState(false);
@@ -406,6 +406,20 @@ const TeacherSubjectDetails = () => {
     instructions: "",
   });
   const [showModal, setShowModal] = useState(false);
+
+  useEffect(() => {
+    if (user) {
+      // Clear previous data first
+      setSubjects(null);
+      setStudents(null);
+      // Then fetch new teacher's data
+      refetchTeacherData();
+    } else {
+      //   // Clear data when logged out
+      setSubjects(null);
+      setStudents(null);
+    }
+  }, [user]);
 
   useEffect(() => {
     if (subjects) {
@@ -428,6 +442,7 @@ const TeacherSubjectDetails = () => {
     e.preventDefault();
     // Add your assignment creation logic here
     console.log("Creating assignment:", newAssignment);
+    console.log(VITE_URL);
     let res = await fetch(`${VITE_URL}/teacher/addAssignment`, {
       method: "POST",
       headers: {

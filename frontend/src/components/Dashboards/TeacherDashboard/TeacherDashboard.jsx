@@ -39,11 +39,26 @@ import { useAuth } from "../../../context/AuthContext";
 const TeacherDashboard = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
-  const { subjects } = useTeacher();
+  const { subjects, setStudents , setSubjects, refetchTeacherData } = useTeacher();
   const [searchTerm, setSearchTerm] = useState("");
   const [filter, setFilter] = useState("all");
   const [showProfileMenu, setShowProfileMenu] = useState(false);
   const [showStats, setShowStats] = useState(true);
+
+  useEffect(() => {
+    if (user) {
+      // Clear previous data first
+      setSubjects(null);
+      setStudents(null);
+      // Then fetch new teacher's data
+      refetchTeacherData();
+    } else {
+      //   // Clear data when logged out
+      setSubjects(null);
+      setStudents(null);
+    }
+  }, [user]);
+
   // const [activeSubject, setActiveSubject] = useState(null);
 
   // // Mock data - Replace with actual data
@@ -215,52 +230,6 @@ const TeacherDashboard = () => {
                     }`}
                   />
                 </button>
-
-                {showProfileMenu && (
-                  <>
-                    <div
-                      className="fixed inset-0 z-40"
-                      onClick={() => setShowProfileMenu(false)}
-                    />
-                    <div className="absolute right-0 top-full mt-2 w-64 rounded-xl border border-white/10 bg-gray-900/95 backdrop-blur-xl shadow-2xl shadow-purple-500/10 z-50 overflow-hidden animate-fade-in">
-                      <div className="p-4 border-b border-white/10">
-                        <div className="flex items-center gap-3">
-                          <div className="w-12 h-12 rounded-full bg-gradient-to-r from-purple-600 to-blue-600 flex items-center justify-center">
-                            <span className="text-lg font-bold text-white">
-                              {user?.name?.charAt(0).toUpperCase() || "T"}
-                            </span>
-                          </div>
-                          <div>
-                            <p className="text-sm font-medium text-white">
-                              {user?.name || "Teacher"}
-                            </p>
-                            <p className="text-xs text-white/60">
-                              {user?.email || "teacher@email.com"}
-                            </p>
-                          </div>
-                        </div>
-                      </div>
-
-                      <div className="p-2">
-                        <button className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-white/80 hover:text-white hover:bg-white/10 transition-all duration-200">
-                          <User className="w-4 h-4" />
-                          <span className="text-sm">My Profile</span>
-                        </button>
-                        <button className="w-full flex items-center gap-3 px=3 py-2 rounded-lg text-white/80 hover:text-white hover:bg-white/10 transition-all duration-200">
-                          <Settings className="w-4 h-4" />
-                          <span className="text-sm">Settings</span>
-                        </button>
-                        <button
-                          onClick={() => navigate("/login")}
-                          className="w-full flex items-center gap-3 px=3 py=2 rounded-lg text-red-400 hover:text-red-300 hover:bg-red-500/10 transition-all duration-200 mt-2"
-                        >
-                          <LogOut className="w-4 h-4" />
-                          <span className="text-sm">Sign Out</span>
-                        </button>
-                      </div>
-                    </div>
-                  </>
-                )}
               </div>
             </div>
           </div>
@@ -279,7 +248,6 @@ const TeacherDashboard = () => {
                 Manage all your assigned courses and track student progress
               </p>
             </div>
-           
           </div>
 
           {/* Quick Stats */}

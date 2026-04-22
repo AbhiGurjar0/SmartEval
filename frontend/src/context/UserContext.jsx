@@ -15,7 +15,7 @@ export const UserProvider = ({ children }) => {
         data = data.subjects;
       }
       if (data) {
-        console.log("User Context:", data);
+        // console.log("User Context:", data);
         setSubjects(data);
       } else {
         setSubjects(null);
@@ -25,12 +25,10 @@ export const UserProvider = ({ children }) => {
     }
   };
 
-  useEffect(() => {
-    allSubjects();
-  }, []);
+
 
   return (
-    <UserContext.Provider value={{ subjects, setSubjects }}>
+    <UserContext.Provider value={{ subjects, setSubjects , allSubjects}}>
       {children}
     </UserContext.Provider>
   );
